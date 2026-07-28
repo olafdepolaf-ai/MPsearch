@@ -125,7 +125,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             {
               id: nextId(),
               role: "assistant",
-              text: "Leuk plan! Ik heb een paar compacte koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
+              text: "Leuk plan! Ik heb een paar koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
               cards: "koelkasten",
             },
           ]);
