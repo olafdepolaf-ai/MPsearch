@@ -184,7 +184,7 @@ function ItemPage() {
         </button>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 pb-28">
         <div className="aspect-square w-full bg-muted">
           <img src={item.img} alt={item.title} className="h-full w-full object-cover" />
         </div>
@@ -211,21 +211,26 @@ function ItemPage() {
 
           <div ref={ctaSentinelRef} aria-hidden="true" />
 
-          <section className="mt-5">
-            <h2 className="text-sm font-bold">Beschrijving</h2>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">{item.desc}</p>
+          <section className="mt-4">
+            <h2 className="text-sm font-bold">Biedingen (0)</h2>
+            <p className="mt-1 text-xs text-muted-foreground">Geen biedingen geplaatst</p>
           </section>
 
           <section className="mt-5">
             <h2 className="text-sm font-bold">Kenmerken</h2>
-            <dl className="mt-2 divide-y rounded-xl border">
+            <dl className="mt-2 grid grid-cols-2 gap-x-4 gap-y-3 rounded-xl border p-3">
               {item.specs.map(([k, v]) => (
-                <div key={k} className="flex justify-between px-3 py-2 text-xs">
-                  <dt className="text-muted-foreground">{k}</dt>
-                  <dd className="font-medium">{v}</dd>
+                <div key={k}>
+                  <dt className="text-[11px] text-muted-foreground">{k}</dt>
+                  <dd className="text-xs font-medium">{v}</dd>
                 </div>
               ))}
             </dl>
+          </section>
+
+          <section className="mt-5">
+            <h2 className="text-sm font-bold">Beschrijving</h2>
+            <p className="mt-2 text-sm leading-relaxed text-foreground/80">{item.desc}</p>
           </section>
 
           <section className="mt-5 flex items-center gap-1 text-xs text-muted-foreground">
@@ -238,14 +243,14 @@ function ItemPage() {
       {/* CTA — hidden until you've scrolled past the seller card, then fixed above the bottom nav (matches the real app) */}
       {showCta && (
         <div className="animate-fade-in fixed inset-x-0 bottom-[64px] z-20 border-t bg-white p-3">
-          <div className="flex gap-2">
-            <button className="flex flex-1 items-center justify-center gap-1.5 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
-              <Gavel className="h-4 w-4" />
-              Bied
-            </button>
-            <button className="flex flex-[2] items-center justify-center gap-1.5 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
+          <div className="flex flex-col gap-2">
+            <button className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
               <MessagesSquare className="h-4 w-4" />
               Stuur bericht
+            </button>
+            <button className="flex w-full items-center justify-center gap-1.5 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
+              <Gavel className="h-4 w-4" />
+              Bied
             </button>
           </div>
         </div>
