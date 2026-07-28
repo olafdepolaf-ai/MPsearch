@@ -129,7 +129,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
               id: nextId(),
               role: "assistant",
               text:
-                "Wil je 'm gewoon in Nederland kopen op Marktplaats, of liever op je vakantiebestemming? Ga je naar Frankrijk, Italië of Duitsland? Dan kan ik ook zoeken bij de zusterwebsites van Marktplaats daar — bijvoorbeeld in de buurt van je bestemming.",
+                "Wil je 'm gewoon in Nederland kopen op Marktplaats, of liever op je vakantiebestemming? Ga je naar Frankrijk, Italië of Duitsland? Ik kan daar voor je zoeken en helpen met de taal via de zusterwebsites van Marktplaats.",
               cards: "koelkast-destination-choice",
             },
           ]);
