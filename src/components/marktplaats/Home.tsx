@@ -137,7 +137,7 @@ const featured: Array<{
 function IntegratedChatDock() {
   const { pickSuggestion } = useChat();
   return (
-    <div className="border-t border-border bg-white px-4 pt-3 pb-4">
+    <div className="sticky top-16 z-20 border-t border-border bg-white px-4 pt-3 pb-4">
       <IntegratedSearchBar />
       <div className="no-scrollbar mt-3 flex gap-2.5 overflow-x-auto">
         {suggestions.map((s) => (
@@ -162,6 +162,7 @@ export function MpHome() {
   return (
     <div className="flex min-h-full flex-col bg-white">
       <MpHeader />
+      {mode === "integrated-search" && <IntegratedChatDock />}
 
       {/* Category tabs strip */}
       <nav className="border-b border-border bg-white">
@@ -331,9 +332,9 @@ export function MpHome() {
 
 
 
-      {/* Floating assistant + bottom nav — sticky over scrolling page */}
+      {/* Bottom nav — sticky over scrolling page. InspirationBubbles (Demo 1 only) rides along above it; Demo 2's assistant entry now lives up top, under the header. */}
       <div className="sticky bottom-0 z-30">
-        {mode === "integrated-search" ? <IntegratedChatDock /> : <InspirationBubbles />}
+        {mode === "chat-menu" && <InspirationBubbles />}
         <MpBottomNav />
       </div>
     </div>
