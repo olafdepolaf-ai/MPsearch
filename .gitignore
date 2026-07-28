@@ -3,9 +3,11 @@ dist/
 .output/
 .vinxi/
 .vite/
+.vercel
 *.local
 .env
 .env.*
 !.env.example
 .DS_Store
 src/routeTree.gen.ts
+.env*
