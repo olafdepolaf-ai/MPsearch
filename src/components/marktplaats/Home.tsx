@@ -1,5 +1,5 @@
 import { MpHeader, MpBottomNav, IntegratedSearchBar } from "./Chrome";
-import { Heart, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
+import { Heart, ArrowRight, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { InspirationBubbles, suggestions } from "../chat/InspirationBubbles";
@@ -85,13 +85,19 @@ const discoveryTiles: Array<{
   },
 ];
 
-// Echte advertenties uit Marktplaats > Caravans en Kamperen > Koelboxen
+// Echte advertenties uit Marktplaats > Caravans en Kamperen > Koelboxen.
+// Verkoper/rating: echte data voor koelbox-60 (zie item.$id.tsx); voor de
+// admarkt/dealer-advertenties daaronder bestaat geen individuele
+// verkopersbeoordeling, dus die zijn verzonnen (representatieve NL-namen).
 const featured: Array<{
   id?: string;
   title: string;
   price: string;
   loc: string;
   img: string;
+  seller: string;
+  rating: string;
+  reviews: number;
 }> = [
   {
     id: "koelbox-60",
@@ -99,12 +105,18 @@ const featured: Array<{
     price: "€ 219,00",
     loc: "Amsterdam",
     img: "https://admarkt-cdn.marktplaats.com/api/v1/icas-mp-pro-admarkt/images/10/10fdd7db-4e06-46e1-a100-36558ef94c19?rule=eps_85",
+    seller: "CoolTrade",
+    rating: "4.8",
+    reviews: 312,
   },
   {
     title: "Brisby 40 Liter Elektrische Koelbox, Frigobox 12/230 Volt",
     price: "€ 79,99",
     loc: "Moordrecht",
     img: "https://admarkt-cdn.marktplaats.com/api/v1/icas-mp-pro-admarkt/images/21/21eac0fc-6340-4630-b528-74fe027fa9d4?rule=eps_85",
+    seller: "Kevin_koelt",
+    rating: "4.6",
+    reviews: 34,
   },
 
   {
@@ -112,24 +124,36 @@ const featured: Array<{
     price: "€ 289,00",
     loc: "Rijssen",
     img: "https://admarkt-cdn.marktplaats.com/api/v1/icas-mp-pro-admarkt/images/bd/bd520d3c-740d-4553-80f0-e734e06d6737?rule=eps_85",
+    seller: "Twanne",
+    rating: "4.9",
+    reviews: 81,
   },
   {
     title: "Dometic ACX3 40 liter nog splinternieuw",
     price: "€ 300,00",
     loc: "Amsterdam",
     img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/9f1323f1-bf86-4ad8-890c-1fa3f77b4030?rule=ecg_mp_eps$_85",
+    seller: "Fenna",
+    rating: "5.0",
+    reviews: 14,
   },
   {
     title: "EcoFlow GLACIER Draagbare Compressor Koelbox / Vriezer",
     price: "€ 750,00",
     loc: "Utrecht",
     img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/8cad7792-9e53-406d-826d-e83d0e7dec58?rule=ecg_mp_eps$_85",
+    seller: "OutdoorGijs",
+    rating: "4.8",
+    reviews: 203,
   },
   {
     title: "Campingaz Elektrische Koelbox 12V - Ideaal voor onderweg",
     price: "€ 20,00",
     loc: "Rotterdam",
     img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/ab9b2cb7-a101-4629-a2a8-517b21fd60f9?rule=ecg_mp_eps$_85",
+    seller: "Marloes92",
+    rating: "4.7",
+    reviews: 19,
   },
 ];
 
@@ -295,6 +319,16 @@ export function MpHome() {
             {featured.map((f) => {
               const inner = (
                 <>
+                  <div className="flex items-center gap-1.5 px-2 pt-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                      {f.seller[0]}
+                    </span>
+                    <span className="truncate text-[11px] font-medium text-foreground">{f.seller}</span>
+                    <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-muted-foreground">
+                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+                      {f.rating} <span className="text-muted-foreground/70">({f.reviews})</span>
+                    </span>
+                  </div>
                   <div className="relative aspect-square bg-muted">
                     <img
                       src={f.img}
