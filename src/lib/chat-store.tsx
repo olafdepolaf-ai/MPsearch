@@ -150,7 +150,10 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         const entry = productEntry(productTitle);
         setEntryState(entry);
         setFlow(entry.flow);
-        setView("peek");
+        // Tapping a product card from an already-open chat should close the
+        // sheet entirely, not drop it down to the peek upsell — that upsell
+        // is only for arriving at a product "cold" (chat wasn't in use).
+        setView((prevView) => (prevView === "open" ? "closed" : "peek"));
         setMessages(entry.messages);
         setRevealFrom(entry.messages.length);
       },
