@@ -73,6 +73,14 @@ const KOELBOX_60_IMG =
 
 const koelkastProducts = [
   {
+    id: "koelbox-60",
+    title: "Compressor koelbox elektrisch — Coolbox Frigobox 60L",
+    price: "€ 219,00",
+    loc: "Amsterdam",
+    img: KOELBOX_60_IMG,
+    tag: "60L · Grootste capaciteit",
+  },
+  {
     id: "koelkast-1",
     title: "Compressor koelkast 12V/230V — 25L",
     price: "€ 189,00",
@@ -428,7 +436,7 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
   // text so nothing ever gets cut off.
   const suggestions = [
     { emoji: "🛏️", label: "Slaapmatjes & stoeltjes" },
-    { emoji: "🧊", label: "Compacte koelboxen · Amsterdam" },
+    { emoji: "🧊", label: "Een koelkast voor op vakantie" },
     { emoji: "💬", label: "Koelbox op gas of stroom?" },
     { emoji: "💬", label: "Lichtgewicht stoeltjes in de buurt" },
     { emoji: "💬", label: "Wat past makkelijk in trein of fietstas?" },
