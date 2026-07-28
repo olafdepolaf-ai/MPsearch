@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { ChevronLeft, Heart, Share2, MapPin, Shield, Star } from "lucide-react";
+import { ChevronLeft, Heart, Share2, MapPin, Shield, Star, Gavel, MessagesSquare } from "lucide-react";
 import { MpBottomNav } from "@/components/marktplaats/Chrome";
 import koelkast1 from "@/assets/koelkast1.jpg";
 import koelkast2 from "@/assets/koelkast2.jpg";
@@ -145,6 +145,20 @@ function ItemPage() {
     }
   }, [id]);
 
+  // The Bied/Bericht bar only shows once you've scrolled past the seller
+  // card — matches the real Marktplaats app, where it isn't visible yet
+  // at the very top of the listing.
+  const [showCta, setShowCta] = useState(false);
+  const ctaSentinelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ctaSentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setShowCta(!entry.isIntersecting));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [id]);
+
 
   if (!item) {
     return (
@@ -195,6 +209,8 @@ function ItemPage() {
             <button className="rounded-full border px-3 py-1.5 text-xs font-medium">Bekijk</button>
           </div>
 
+          <div ref={ctaSentinelRef} aria-hidden="true" />
+
           <section className="mt-5">
             <h2 className="text-sm font-bold">Beschrijving</h2>
             <p className="mt-2 text-sm leading-relaxed text-foreground/80">{item.desc}</p>
@@ -217,19 +233,23 @@ function ItemPage() {
             <span>Populair item — 43 mensen bekeken dit vandaag</span>
           </section>
         </div>
+      </main>
 
-        {/* CTA — part of the normal page flow, not floating */}
-        <div className="border-t bg-white p-3">
+      {/* CTA — hidden until you've scrolled past the seller card, then fixed above the bottom nav (matches the real app) */}
+      {showCta && (
+        <div className="animate-fade-in fixed inset-x-0 bottom-[64px] z-20 border-t bg-white p-3">
           <div className="flex gap-2">
-            <button className="flex-1 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
+            <button className="flex flex-1 items-center justify-center gap-1.5 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
+              <Gavel className="h-4 w-4" />
               Bied
             </button>
-            <button className="flex-[2] rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
+            <button className="flex flex-[2] items-center justify-center gap-1.5 rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
+              <MessagesSquare className="h-4 w-4" />
               Stuur bericht
             </button>
           </div>
         </div>
-      </main>
+      )}
 
       <div className="sticky bottom-0 z-30">
         <MpBottomNav />
