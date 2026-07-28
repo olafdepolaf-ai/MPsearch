@@ -20,6 +20,8 @@ type ChatCtx = {
   view: ChatView;
   flow: ChatFlow;
   messages: ChatMessage[];
+  /** Index in `messages` from which new messages should animate in (typing bubble, one by one). Earlier messages render instantly. */
+  revealFrom: number;
   open: () => void;
   close: () => void;
   pickSuggestion: (label: string) => void;
@@ -35,37 +37,39 @@ const Ctx = createContext<ChatCtx | null>(null);
 let mid = 0;
 const nextId = () => `m${++mid}`;
 
+const makeInitialMessages = (): ChatMessage[] => [
+  {
+    id: nextId(),
+    role: "assistant",
+    text: "Hoi! Ik ben je Marktplaats-assistent. Waar ben je naar op zoek?",
+  },
+];
+
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<ChatView>("closed");
   const [flow, setFlow] = useState<ChatFlow>("intro");
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: nextId(),
-      role: "assistant",
-      text: "Hoi! Ik ben je Marktplaats-assistent. Waar ben je naar op zoek?",
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(makeInitialMessages);
+  // Nothing to animate for the initial static greeting.
+  const [revealFrom, setRevealFrom] = useState(1);
 
   const value = useMemo<ChatCtx>(
     () => ({
       view,
       flow,
       messages,
+      revealFrom,
       open: () => setView("open"),
       close: () => setView("closed"),
       reset: () => {
         setFlow("intro");
-        setMessages([
-          {
-            id: nextId(),
-            role: "assistant",
-            text: "Hoi! Ik ben je Marktplaats-assistent. Waar ben je naar op zoek?",
-          },
-        ]);
+        setMessages(makeInitialMessages());
+        setRevealFrom(1);
       },
       pickSuggestion: (label) => {
         setView("open");
         setFlow("koelkast-results");
+        // Skip past the new user message — only the assistant's reply animates in.
+        setRevealFrom(messages.length + 1);
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "user", text: label },
@@ -80,6 +84,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       enterProduct: (productTitle) => {
         setFlow("on-product");
         setView("peek");
+        setRevealFrom(messages.length);
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "assistant", text: `Goede keuze — je bekijkt nu "${productTitle}". Wil je iets weten over deze koelkast?` },
@@ -90,10 +95,12 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setFlow("on-koelbox-60");
         setView("closed");
         setMessages([]);
+        setRevealFrom(0);
       },
       askKofferbak: () => {
         setView("open");
         setFlow("koelbox-60-answer");
+        setRevealFrom(messages.length + 1);
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "user", text: "Past deze in mijn achterbak?" },
@@ -114,6 +121,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       askPlug: () => {
         setView("open");
         setFlow("plug-answer");
+        setRevealFrom(messages.length + 1);
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "user", text: "Werkt deze ook in Griekenland? Of heb ik een aparte stekker nodig?" },
@@ -127,7 +135,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ]);
       },
     }),
-    [view, flow, messages]
+    [view, flow, messages, revealFrom]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

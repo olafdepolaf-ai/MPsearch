@@ -144,7 +144,7 @@ export function MpBottomNav() {
     { key: "berichten", icon: MessagesSquare, label: "Berichten" },
     { key: "plaatsen", icon: Camera, label: "Plaatsen" },
     { key: "meldingen", icon: Bell, label: "Meldingen" },
-    { key: "mijn", icon: CircleUser, label: "Mijn Marktplaats" },
+    { key: "mijn", icon: CircleUser, label: "Mijn Marktplaats", small: true },
   ];
   return (
     <nav className="border-t border-border bg-white shadow-[0_-6px_18px_rgba(0,0,0,0.06)]">
@@ -176,9 +176,9 @@ export function MpBottomNav() {
                 strokeWidth={it.active ? 2.25 : 1.75}
               />
               <span
-                className={`mt-0.5 text-[10px] leading-[12px] ${
-                  it.active ? "font-medium text-primary" : "text-foreground/80"
-                }`}
+                className={`mt-0.5 whitespace-nowrap leading-[12px] ${
+                  it.small ? "text-[9px]" : "text-[10px]"
+                } ${it.active ? "font-medium text-primary" : "text-foreground/80"}`}
               >
                 {it.label}
               </span>

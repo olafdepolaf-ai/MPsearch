@@ -23,22 +23,24 @@ function TypingBubble() {
 }
 
 /**
- * Reveal messages one-by-one. User messages appear near-instantly;
- * assistant messages are preceded by an animated typing bubble.
+ * Reveal messages one-by-one, starting from `revealFrom` (earlier messages —
+ * prior chat history plus the user's own new message — render instantly).
+ * User messages appear near-instantly; assistant messages are preceded by
+ * an animated typing bubble.
  */
-function useMessageReveal(messages: ChatMessage[]) {
-  const [count, setCount] = useState(messages.length);
+function useMessageReveal(messages: ChatMessage[], revealFrom: number) {
+  const [count, setCount] = useState(revealFrom);
   const [typing, setTyping] = useState(false);
-  const prevLenRef = useRef(messages.length);
+  const prevRevealFromRef = useRef(revealFrom);
 
-  // If messages were reset/shrunk, snap.
+  // Snap when a new interaction sets a fresh revealFrom, or messages were reset/shrunk.
   useEffect(() => {
-    if (messages.length < prevLenRef.current) {
-      setCount(messages.length);
+    if (revealFrom !== prevRevealFromRef.current || messages.length < prevRevealFromRef.current) {
+      setCount(Math.min(revealFrom, messages.length));
       setTyping(false);
     }
-    prevLenRef.current = messages.length;
-  }, [messages.length]);
+    prevRevealFromRef.current = revealFrom;
+  }, [messages.length, revealFrom]);
 
   useEffect(() => {
     if (count >= messages.length) {
@@ -134,7 +136,7 @@ export function AssistantFab() {
 
 
 export function ChatWindow() {
-  const { view, close, flow, messages, askPlug, pickSuggestion, askKofferbak } = useChat();
+  const { view, close, flow, messages, revealFrom, askPlug, pickSuggestion, askKofferbak } = useChat();
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
@@ -185,6 +187,7 @@ export function ChatWindow() {
               ) : (
                 <MessageStream
                   messages={messages}
+                  revealFrom={revealFrom}
                   flow={flow}
                   onPickKoelkast={(id) => navigate({ to: "/item/$id", params: { id } })}
                   onPickKoelbox20={(id) => navigate({ to: "/item/$id", params: { id } })}
@@ -204,16 +207,18 @@ export function ChatWindow() {
 
 function MessageStream({
   messages,
+  revealFrom,
   flow,
   onPickKoelkast,
   onPickKoelbox20,
 }: {
   messages: ChatMessage[];
+  revealFrom: number;
   flow: string;
   onPickKoelkast: (id: string) => void;
   onPickKoelbox20: (id: string) => void;
 }) {
-  const { visible, typing } = useMessageReveal(messages);
+  const { visible, typing } = useMessageReveal(messages, revealFrom);
   const done = visible.length === messages.length && !typing;
   return (
     <>
