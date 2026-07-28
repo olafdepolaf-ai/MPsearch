@@ -160,7 +160,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           {
             id: nextId(),
             role: "assistant",
-            text: "Leuk plan! Ik heb een paar koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
+            text: "Ik heb een paar koelkasten gevonden van betrouwbare merken voor in je tent.",
             cards: "koelkasten",
           },
         ]);
