@@ -12,6 +12,7 @@ export type ChatFlow =
   | "intro"
   | "koelkast-results"
   | "racefiets-results"
+  | "suggestion-fallback"
   | "on-product"
   | "plug-answer"
   | "on-koelbox-60"
@@ -84,17 +85,32 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           ]);
           return;
         }
-        // Everything else still falls back to the koelkast flow — only
-        // "Betaalbare racefiets" has its own scripted results so far.
-        setFlow("koelkast-results");
+        if (label === "Een koelkast voor op vakantie") {
+          setFlow("koelkast-results");
+          setMessages((prev) => [
+            ...prev,
+            { id: nextId(), role: "user", text: label },
+            {
+              id: nextId(),
+              role: "assistant",
+              text: "Leuk plan! Ik heb een paar compacte koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
+              cards: "koelkasten",
+            },
+          ]);
+          return;
+        }
+        // No scripted results for this suggestion yet — say so honestly
+        // instead of (incorrectly) reusing the koelkast script for
+        // anything unrecognized. The koelkast Q&A elsewhere (Koelbox60Intro
+        // / askKofferbak) stays hardcoded to the koelbox-60 item page.
+        setFlow("suggestion-fallback");
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "user", text: label },
           {
             id: nextId(),
             role: "assistant",
-            text: "Leuk plan! Ik heb een paar compacte koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
-            cards: "koelkasten",
+            text: "Daar kan ik je in deze demo nog niet mee helpen — probeer 'Een koelkast voor op vakantie' of 'Betaalbare racefiets' voor een voorbeeld van hoe ik zoekopdrachten oppak.",
           },
         ]);
       },
