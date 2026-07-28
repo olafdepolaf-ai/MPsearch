@@ -145,6 +145,17 @@ function ItemPage() {
     }
   }, [id]);
 
+  // The app's real scroll container lives outside this route (in
+  // __root.tsx) and persists across navigations, so it keeps whatever
+  // scroll offset the previous page was at — e.g. tapping a suggested
+  // product from mid-conversation opened the new item page halfway down.
+  // scrollIntoView on the page's own top element fixes that regardless of
+  // whether the window or an inner container is the one actually scrolling.
+  const pageTopRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    pageTopRef.current?.scrollIntoView({ block: "start" });
+  }, [id]);
+
   // The Bied/Bericht bar only shows once you've scrolled past the seller
   // card — matches the real Marktplaats app, where it isn't visible yet
   // at the very top of the listing.
@@ -169,7 +180,7 @@ function ItemPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div ref={pageTopRef} className="flex min-h-screen flex-col bg-white">
       {/* Top bar */}
       <header className="sticky top-0 z-20 flex items-center gap-3 border-b bg-white/95 px-3 py-3 backdrop-blur">
         <Link to="/" className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-muted">
