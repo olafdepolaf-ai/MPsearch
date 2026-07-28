@@ -21,18 +21,15 @@ function IntegratedSearchBar() {
     <button
       type="button"
       onClick={open}
-      className="flex w-full items-end gap-2 rounded-md bg-white px-3 py-2.5 text-left shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+      className="flex w-full items-center gap-2 rounded-md bg-white px-2 py-2 text-left shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
     >
-      <Plus className="h-5 w-5 shrink-0 text-muted-foreground" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-[14px] leading-[18px] text-muted-foreground">
-          Chat met je Marktplaatsassistent
-        </span>
-        <span className="block text-[11px] leading-[14px] text-muted-foreground/70">
-          Typ een vraag of upload een foto
-        </span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-500 text-white">
+        <Plus className="h-4 w-4" />
       </span>
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f5b48a] text-white shadow-sm">
+      <span className="min-w-0 flex-1 truncate text-[14px] leading-[18px] text-muted-foreground">
+        Chat met je Marktplaatsassistent
+      </span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-100 text-slate-600">
         <ArrowUp className="h-4 w-4" strokeWidth={2.75} />
       </span>
     </button>
