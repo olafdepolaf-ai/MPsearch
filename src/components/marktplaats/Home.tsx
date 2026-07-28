@@ -1,7 +1,7 @@
 import { MpHeader, MpBottomNav, IntegratedSearchBar } from "./Chrome";
 import { Heart, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { InspirationBubbles, suggestions } from "../chat/InspirationBubbles";
 import { useChat } from "@/lib/chat-store";
 import { useDemoMode } from "@/lib/demo-mode";
@@ -158,6 +158,13 @@ function IntegratedChatDock() {
 export function MpHome() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
   const { mode } = useDemoMode();
+  const { reset } = useChat();
+
+  // Landing on the homepage is its own context — claim the assistant's
+  // fresh entry state here too, same as item pages do for themselves.
+  useEffect(() => {
+    reset();
+  }, []);
 
   return (
     <div className="flex min-h-full flex-col bg-white">

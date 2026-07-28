@@ -39,20 +39,40 @@ const Ctx = createContext<ChatCtx | null>(null);
 let mid = 0;
 const nextId = () => `m${++mid}`;
 
-const makeInitialMessages = (): ChatMessage[] => [
-  {
-    id: nextId(),
-    role: "assistant",
-    text: "Hoi! Ik ben je Marktplaats-assistent. Waar ben je naar op zoek?",
-  },
-];
+/** What the assistant resets back to when opened fresh — one per page context. */
+type EntryState = { flow: ChatFlow; messages: ChatMessage[] };
+
+const introEntry = (): EntryState => ({
+  flow: "intro",
+  messages: [
+    {
+      id: nextId(),
+      role: "assistant",
+      text: "Hoi! Ik ben je Marktplaats-assistent. Waar ben je naar op zoek?",
+    },
+  ],
+});
+
+const koelbox60Entry = (): EntryState => ({ flow: "on-koelbox-60", messages: [] });
+
+const productEntry = (productTitle: string): EntryState => ({
+  flow: "on-product",
+  messages: [
+    {
+      id: nextId(),
+      role: "assistant",
+      text: `Goede keuze — je bekijkt nu "${productTitle}". Wil je iets weten over dit product?`,
+    },
+  ],
+});
 
 export function ChatProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<ChatView>("closed");
-  const [flow, setFlow] = useState<ChatFlow>("intro");
-  const [messages, setMessages] = useState<ChatMessage[]>(makeInitialMessages);
+  const [entryState, setEntryState] = useState<EntryState>(introEntry);
+  const [flow, setFlow] = useState<ChatFlow>(() => entryState.flow);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => entryState.messages);
   // Nothing to animate for the initial static greeting.
-  const [revealFrom, setRevealFrom] = useState(1);
+  const [revealFrom, setRevealFrom] = useState(() => entryState.messages.length);
 
   const value = useMemo<ChatCtx>(
     () => ({
@@ -60,12 +80,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       flow,
       messages,
       revealFrom,
-      open: () => setView("open"),
+      // Opening via the main assistant entry point (FAB / bottom-nav icon /
+      // the Demo 2 search bar) always starts a clean conversation for the
+      // current page context — closing + reopening is a fresh start, not a
+      // resume. The panel's own open animation is what carries the "old
+      // content is gone, here's the new empty state" transition.
+      open: () => {
+        setView("open");
+        setFlow(entryState.flow);
+        setMessages(entryState.messages);
+        setRevealFrom(entryState.messages.length);
+      },
       close: () => setView("closed"),
       reset: () => {
-        setFlow("intro");
-        setMessages(makeInitialMessages());
-        setRevealFrom(1);
+        const entry = introEntry();
+        setEntryState(entry);
+        setFlow(entry.flow);
+        setMessages(entry.messages);
+        setRevealFrom(entry.messages.length);
       },
       pickSuggestion: (label) => {
         setView("open");
@@ -115,19 +147,20 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ]);
       },
       enterProduct: (productTitle) => {
-        setFlow("on-product");
+        const entry = productEntry(productTitle);
+        setEntryState(entry);
+        setFlow(entry.flow);
         setView("peek");
-        setRevealFrom(messages.length);
-        setMessages((prev) => [
-          ...prev,
-          { id: nextId(), role: "assistant", text: `Goede keuze — je bekijkt nu "${productTitle}". Wil je iets weten over dit product?` },
-        ]);
+        setMessages(entry.messages);
+        setRevealFrom(entry.messages.length);
       },
       enterKoelbox60: () => {
         // Prepare contextual intro flow for the 60L page. Do not open the sheet.
-        setFlow("on-koelbox-60");
+        const entry = koelbox60Entry();
+        setEntryState(entry);
+        setFlow(entry.flow);
         setView("closed");
-        setMessages([]);
+        setMessages(entry.messages);
         setRevealFrom(0);
       },
       askKofferbak: () => {
@@ -168,7 +201,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ]);
       },
     }),
-    [view, flow, messages, revealFrom]
+    [view, flow, messages, revealFrom, entryState]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
