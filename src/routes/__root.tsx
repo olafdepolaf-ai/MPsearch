@@ -120,8 +120,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ChatProvider>
-        <div className="min-h-screen bg-slate-200 md:flex md:items-center md:justify-center md:py-6">
-          <div className="relative mx-auto w-full max-w-[430px] overflow-hidden bg-white md:h-[900px] md:rounded-[2.5rem] md:border-[10px] md:border-slate-900 md:shadow-2xl md:[transform:translateZ(0)]">
+        <div className="min-h-screen bg-slate-200 md:flex md:h-dvh md:items-center md:justify-center md:py-6">
+          <div className="relative mx-auto w-full max-w-[430px] overflow-hidden bg-white md:aspect-[430/900] md:h-[min(900px,calc(100dvh_-_3rem))] md:w-auto md:rounded-[2.5rem] md:border-[10px] md:border-slate-900 md:shadow-2xl md:[transform:translateZ(0)]">
             <div className="relative h-full overflow-y-auto">
               <Outlet />
             </div>

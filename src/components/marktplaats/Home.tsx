@@ -8,7 +8,7 @@ import tileLadekast from "@/assets/tile-ladekast.jpg";
 import tileTent from "@/assets/tile-tent.jpg";
 import tilePeugeot from "@/assets/tile-peugeot.jpg";
 import tileMok from "@/assets/tile-mok.jpg";
-import bannerCouple from "@/assets/banner-couple.png.asset.json";
+import bannerCouple from "@/assets/banner-couple.png";
 
 
 const categoryTabs = [
@@ -226,7 +226,7 @@ export function MpHome() {
             className="relative block overflow-hidden rounded-2xl"
           >
             <img
-              src={bannerCouple.url}
+              src={bannerCouple}
               alt="Stel op de bank kijkt samen op een telefoon"
               className="h-[160px] w-full object-cover"
               loading="lazy"
