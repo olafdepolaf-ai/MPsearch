@@ -1,8 +1,10 @@
-import { MpHeader, MpBottomNav } from "./Chrome";
+import { MpHeader, MpBottomNav, IntegratedSearchBar } from "./Chrome";
 import { Heart, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { InspirationBubbles } from "../chat/InspirationBubbles";
+import { InspirationBubbles, suggestions } from "../chat/InspirationBubbles";
+import { useChat } from "@/lib/chat-store";
+import { useDemoMode } from "@/lib/demo-mode";
 
 import tileLadekast from "@/assets/tile-ladekast.jpg";
 import tileTent from "@/assets/tile-tent.jpg";
@@ -132,8 +134,30 @@ const featured: Array<{
 ];
 
 
+function IntegratedChatDock() {
+  const { pickSuggestion } = useChat();
+  return (
+    <div className="border-t border-border bg-white px-4 pt-3 pb-4">
+      <IntegratedSearchBar />
+      <div className="no-scrollbar mt-3 flex gap-2.5 overflow-x-auto">
+        {suggestions.map((s) => (
+          <button
+            key={s.key}
+            onClick={() => pickSuggestion(s.label)}
+            className="shrink-0 rounded-full border border-primary/25 bg-[oklch(0.97_0.02_250)] px-4 py-2.5 text-[14px] leading-[18px] font-medium text-foreground shadow-sm transition active:scale-95"
+          >
+            <span className="mr-1.5">{s.emoji}</span>
+            {s.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function MpHome() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const { mode } = useDemoMode();
 
   return (
     <div className="flex min-h-full flex-col bg-white">
@@ -309,7 +333,7 @@ export function MpHome() {
 
       {/* Floating assistant + bottom nav — sticky over scrolling page */}
       <div className="sticky bottom-0 z-30">
-        <InspirationBubbles />
+        {mode === "integrated-search" ? <IntegratedChatDock /> : <InspirationBubbles />}
         <MpBottomNav />
       </div>
     </div>

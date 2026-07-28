@@ -15,7 +15,7 @@ function buildSearchUrl(term: string) {
   return `https://www.marktplaats.nl/q/${encodeURIComponent(slug).replace(/%2B/g, "+")}/#postcode:1053HE|view:gallery-view`;
 }
 
-function IntegratedSearchBar() {
+export function IntegratedSearchBar() {
   const { open } = useChat();
   return (
     <button
@@ -96,12 +96,8 @@ export function MpHeader() {
   return (
     <header className="sticky top-0 z-30 bg-[#f5b48a]">
       <div ref={wrapRef} className="relative px-3 py-3">
-        <div className="flex items-center gap-2">
-          {mode === "integrated-search" ? (
-            <div className="min-w-0 flex-1">
-              <IntegratedSearchBar />
-            </div>
-          ) : (
+        <div className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-end" : ""}`}>
+          {mode === "chat-menu" && (
             <form onSubmit={submit} className="min-w-0 flex-1">
               <div className="flex items-center gap-2 rounded-md bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
                 <Search className="h-4 w-4 text-muted-foreground" />

@@ -1,7 +1,7 @@
 import { useChat } from "@/lib/chat-store";
 import { Sparkles } from "lucide-react";
 
-const suggestions = [
+export const suggestions = [
   { label: "Een koelkast voor op vakantie", emoji: "🧊", key: "koelkast" },
   { label: "Betaalbare racefiets", emoji: "🚴", key: "fiets" },
   { label: "Cadeau voor 5-jarige", emoji: "🎁", key: "cadeau" },
