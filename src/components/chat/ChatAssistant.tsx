@@ -424,8 +424,8 @@ function ProductSwiper({
 
 function IntroHome({ onPick }: { onPick: (label: string) => void }) {
   const [ovFilterActive, setOvFilterActive] = useState(true);
-  // One flat, swipeable row — extend this list freely, pills size to their
-  // own text so nothing ever gets cut off.
+  // One flat, stacked list — extend this freely, pills wrap to their own
+  // text so nothing ever gets cut off.
   const suggestions = [
     { emoji: "🛏️", label: "Slaapmatjes & stoeltjes" },
     { emoji: "🧊", label: "Compacte koelboxen · Amsterdam" },
@@ -470,13 +470,13 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
         </span>
       )}
 
-      {/* Suggestions — single horizontal swipe row */}
-      <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+      {/* Suggestions — stacked list */}
+      <div className="flex flex-col gap-2">
         {suggestions.map((s) => (
           <button
             key={s.label}
             onClick={() => onPick(s.label)}
-            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-2 text-[13px] text-foreground transition active:scale-[0.98] hover:bg-muted/40"
+            className="flex w-full items-center gap-1.5 rounded-full border border-border bg-white px-3.5 py-2 text-left text-[13px] text-foreground transition active:scale-[0.98] hover:bg-muted/40"
           >
             <span>{s.emoji}</span>
             {s.label}
