@@ -112,6 +112,25 @@ const koelbox20AltProducts = [
   },
 ];
 
+const racefietsProducts = [
+  {
+    id: "racefiets-rijdprima",
+    title: "Race fiets rijd prima",
+    price: "€ 129,00",
+    loc: "Amsterdam · fietsafstand",
+    img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/45762bb5-36f7-44e9-b7c5-be5af0e56a09?rule=ecg_mp_eps$_85",
+    tag: "★ 4.7 (29) · Beste keuze",
+  },
+  {
+    id: "racefiets-gazelle",
+    title: "Gazelle Primavera aluminium 7000 series racefiets",
+    price: "€ 175,00",
+    loc: "Amsterdam · fietsafstand",
+    img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/eb06f149-d1d2-4e38-b593-86f3166f86eb?rule=ecg_mp_eps$_85",
+    tag: "★ 4.3 (23)",
+  },
+];
+
 
 export function AssistantFab() {
   const { view, open } = useChat();
@@ -137,14 +156,8 @@ export function AssistantFab() {
 
 export function ChatWindow() {
   const { view, close, flow, messages, revealFrom, askPlug, pickSuggestion, askKofferbak } = useChat();
-  const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages, view]);
+  const onPickProduct = (id: string) => navigate({ to: "/item/$id", params: { id } });
 
   if (view === "closed") return null;
 
@@ -179,7 +192,7 @@ export function ChatWindow() {
         ) : (
           <>
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+            <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
               {flow === "intro" ? (
                 <IntroHome onPick={pickSuggestion} />
               ) : flow === "on-koelbox-60" ? (
@@ -189,8 +202,7 @@ export function ChatWindow() {
                   messages={messages}
                   revealFrom={revealFrom}
                   flow={flow}
-                  onPickKoelkast={(id) => navigate({ to: "/item/$id", params: { id } })}
-                  onPickKoelbox20={(id) => navigate({ to: "/item/$id", params: { id } })}
+                  onPickProduct={onPickProduct}
                 />
               )}
             </div>
@@ -209,21 +221,43 @@ function MessageStream({
   messages,
   revealFrom,
   flow,
-  onPickKoelkast,
-  onPickKoelbox20,
+  onPickProduct,
 }: {
   messages: ChatMessage[];
   revealFrom: number;
   flow: string;
-  onPickKoelkast: (id: string) => void;
-  onPickKoelbox20: (id: string) => void;
+  onPickProduct: (id: string) => void;
 }) {
   const { visible, typing } = useMessageReveal(messages, revealFrom);
   const done = visible.length === messages.length && !typing;
+
+  // On a fresh interaction, scroll the user's new message to the top of the
+  // sheet — old context slides out of view instead of the sheet just
+  // growing downward — so each new topic reads like a clean start.
+  const itemRefs = useRef(new Map<string, HTMLDivElement>());
+  const prevRevealFromRef = useRef<number | null>(null);
+  useEffect(() => {
+    const isNewInteraction = revealFrom !== prevRevealFromRef.current;
+    prevRevealFromRef.current = revealFrom;
+    const anchorId = isNewInteraction ? messages[revealFrom - 1]?.id : visible.at(-1)?.id;
+    const el = anchorId ? itemRefs.current.get(anchorId) : undefined;
+    el?.scrollIntoView({
+      block: isNewInteraction ? "start" : "nearest",
+      behavior: isNewInteraction ? "auto" : "smooth",
+    });
+  }, [revealFrom, visible.length, typing]);
+
   return (
     <>
       {visible.map((m) => (
-        <div key={m.id} className="animate-fade-in">
+        <div
+          key={m.id}
+          ref={(el) => {
+            if (el) itemRefs.current.set(m.id, el);
+            else itemRefs.current.delete(m.id);
+          }}
+          className="animate-fade-in"
+        >
           {m.role === "assistant" ? (
             <div className="flex items-end gap-2">
               <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
@@ -238,12 +272,13 @@ function MessageStream({
               </div>
             </div>
           )}
-          {m.cards === "koelkasten" && (
-            <ProductSwiper products={koelkastProducts} onPick={(id) => onPickKoelkast(id)} />
-          )}
+          {m.cards === "koelkasten" && <ProductSwiper products={koelkastProducts} onPick={onPickProduct} />}
           {m.cards === "plug" && <ProductSwiper products={plugProducts} onPick={() => {}} />}
           {m.cards === "koelbox-20-alt" && (
-            <ProductSwiper products={koelbox20AltProducts} onPick={(id) => onPickKoelbox20(id)} />
+            <ProductSwiper products={koelbox20AltProducts} onPick={onPickProduct} />
+          )}
+          {m.cards === "racefietsen" && (
+            <ProductSwiper products={racefietsProducts} onPick={onPickProduct} />
           )}
         </div>
       ))}
@@ -252,6 +287,9 @@ function MessageStream({
 
       {done && flow === "koelkast-results" && (
         <QuickReplies replies={["Iets goedkopers?", "Hoe groot is 25L?", "Werkt op zonnepaneel?"]} />
+      )}
+      {done && flow === "racefiets-results" && (
+        <QuickReplies replies={["Zit er een slot bij?", "Kan ik gepast passen?", "Nog een optie?"]} />
       )}
       {done && flow === "plug-answer" && (
         <QuickReplies replies={["Bedankt!", "En in Kroatië?", "Verzendkosten?"]} />

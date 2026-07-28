@@ -87,6 +87,38 @@ const items: Record<string, {
     desc: "Universele 12V adapter, geschikt voor koelboxen en kleine apparaten.",
     specs: [["Voltage", "12V"], ["Kabel", "1.5m"]],
   },
+  "racefiets-rijdprima": {
+    title: "Race fiets rijd prima",
+    price: "€ 129,00",
+    img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/45762bb5-36f7-44e9-b7c5-be5af0e56a09?rule=ecg_mp_eps$_85",
+    loc: "Amsterdam",
+    seller: "Benjamin · 4.7 ★ (29)",
+    desc: "Racefiets die prima rijdt, geschikt voor dames en heren, met Shimano onderdelen. Gebruikt maar in goede staat.",
+    specs: [
+      ["Merk", "Overige merken"],
+      ["Versnellingen", "15 tot 20 versnellingen (Shimano)"],
+      ["Framehoogte", "57 – 61 cm"],
+      ["Materiaal", "Aluminium"],
+      ["Wielmaat", "28 inch"],
+      ["Remmen", "Velgrem"],
+    ],
+  },
+  "racefiets-gazelle": {
+    title: "Gazelle Primavera aluminium 7000 series racefiets",
+    price: "€ 175,00",
+    img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/eb06f149-d1d2-4e38-b593-86f3166f86eb?rule=ecg_mp_eps$_85",
+    loc: "Amsterdam",
+    seller: "E. van der Kleij · 4.3 ★ (23)",
+    desc: "Gazelle Primavera uit de Aluminium 7000 serie met Shimano 8-speed versnellingen, 3 voorbladen, velgremmen en 28 inch wielen. Inclusief Sigma Sport fietscomputer. Zo goed als nieuw.",
+    specs: [
+      ["Merk", "Gazelle"],
+      ["Materiaal", "Aluminium"],
+      ["Versnellingen", "Shimano 8-speed"],
+      ["Wielmaat", "28 inch"],
+      ["Remmen", "Velgrem"],
+      ["Extra", "Incl. Sigma Sport fietscomputer"],
+    ],
+  },
 };
 
 export const Route = createFileRoute("/item/$id")({
@@ -138,7 +170,7 @@ function ItemPage() {
         </button>
       </header>
 
-      <main className="flex-1 pb-40">
+      <main className="flex-1">
         <div className="aspect-square w-full bg-muted">
           <img src={item.img} alt={item.title} className="h-full w-full object-cover" />
         </div>
@@ -185,19 +217,19 @@ function ItemPage() {
             <span>Populair item — 43 mensen bekeken dit vandaag</span>
           </section>
         </div>
-      </main>
 
-      {/* Sticky CTA */}
-      <div className="fixed inset-x-0 bottom-[64px] z-20 border-t bg-white p-3">
-        <div className="flex gap-2">
-          <button className="flex-1 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
-            Bied
-          </button>
-          <button className="flex-[2] rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
-            Stuur bericht
-          </button>
+        {/* CTA — part of the normal page flow, not floating */}
+        <div className="border-t bg-white p-3">
+          <div className="flex gap-2">
+            <button className="flex-1 rounded-full border-2 border-primary py-3 text-sm font-bold text-primary">
+              Bied
+            </button>
+            <button className="flex-[2] rounded-full bg-primary py-3 text-sm font-bold text-primary-foreground">
+              Stuur bericht
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
 
       <div className="sticky bottom-0 z-30">
         <MpBottomNav />

@@ -4,13 +4,14 @@ export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   text: string;
-  cards?: "koelkasten" | "plug" | "koelbox-20-alt";
+  cards?: "koelkasten" | "plug" | "koelbox-20-alt" | "racefietsen";
 };
 
 export type ChatView = "closed" | "peek" | "open";
 export type ChatFlow =
   | "intro"
   | "koelkast-results"
+  | "racefiets-results"
   | "on-product"
   | "plug-answer"
   | "on-koelbox-60"
@@ -67,9 +68,25 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       },
       pickSuggestion: (label) => {
         setView("open");
-        setFlow("koelkast-results");
         // Skip past the new user message — only the assistant's reply animates in.
         setRevealFrom(messages.length + 1);
+        if (label === "Betaalbare racefiets") {
+          setFlow("racefiets-results");
+          setMessages((prev) => [
+            ...prev,
+            { id: nextId(), role: "user", text: label },
+            {
+              id: nextId(),
+              role: "assistant",
+              text: "Ik heb twee betaalbare racefietsen onder de € 500 gevonden, allebei in Amsterdam en op fietsafstand — zo opgehaald en direct mee naar huis gefietst. Op basis van de verkopersbeoordelingen zou ik gaan voor de fiets van Benjamin: die heeft de hoogste rating van de twee.",
+              cards: "racefietsen",
+            },
+          ]);
+          return;
+        }
+        // Everything else still falls back to the koelkast flow — only
+        // "Betaalbare racefiets" has its own scripted results so far.
+        setFlow("koelkast-results");
         setMessages((prev) => [
           ...prev,
           { id: nextId(), role: "user", text: label },
@@ -87,7 +104,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setRevealFrom(messages.length);
         setMessages((prev) => [
           ...prev,
-          { id: nextId(), role: "assistant", text: `Goede keuze — je bekijkt nu "${productTitle}". Wil je iets weten over deze koelkast?` },
+          { id: nextId(), role: "assistant", text: `Goede keuze — je bekijkt nu "${productTitle}". Wil je iets weten over dit product?` },
         ]);
       },
       enterKoelbox60: () => {
