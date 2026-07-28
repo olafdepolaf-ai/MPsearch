@@ -446,10 +446,10 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
             Marktplaats Assistent
           </p>
           <p className="mt-1 text-[15px] leading-[20px] font-medium text-foreground">
-            Hoi Olaf, je kampeeruitrusting is bijna compleet.
+            We gaan verder met het plannen van je vakantie.
           </p>
           <p className="mt-1 text-[13px] leading-[18px] text-muted-foreground">
-            Waar kan ik mee helpen?
+            Wat heb je nodig?
           </p>
         </div>
       </div>
