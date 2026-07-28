@@ -3,6 +3,7 @@ import { Heart, ArrowRight, ChevronDown, ChevronUp } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { InspirationBubbles } from "../chat/InspirationBubbles";
+import { useDemoMode, type DemoMode } from "@/lib/demo-mode";
 
 import tileLadekast from "@/assets/tile-ladekast.jpg";
 import tileTent from "@/assets/tile-tent.jpg";
@@ -132,11 +133,36 @@ const featured: Array<{
 ];
 
 
+function DemoModeSwitcher() {
+  const { mode, setMode } = useDemoMode();
+  const options: { key: DemoMode; label: string }[] = [
+    { key: "chat-menu", label: "Demo 1 · Chatmenu" },
+    { key: "integrated-search", label: "Demo 2 · AI Search" },
+  ];
+  return (
+    <div className="flex items-center justify-center gap-1.5 bg-slate-900 px-3 py-1.5">
+      {options.map((o) => (
+        <button
+          key={o.key}
+          type="button"
+          onClick={() => setMode(o.key)}
+          className={`rounded-full px-3 py-1 text-[11px] font-medium transition ${
+            mode === o.key ? "bg-white text-slate-900" : "text-white/60 hover:text-white"
+          }`}
+        >
+          {o.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function MpHome() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   return (
     <div className="flex min-h-full flex-col bg-white">
+      <DemoModeSwitcher />
       <MpHeader />
 
       {/* Category tabs strip */}

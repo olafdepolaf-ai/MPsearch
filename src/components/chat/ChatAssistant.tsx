@@ -1,6 +1,6 @@
 import { useChat } from "@/lib/chat-store";
 import { NAV_MODE } from "@/lib/layout-settings";
-import { X, ArrowUp, Plus, ChevronDown, Sparkles, Train, Snowflake, Armchair, Bike } from "lucide-react";
+import { X, ArrowUp, Plus, Mic, ChevronDown, Sparkles, Train, Snowflake, Armchair, Bike } from "lucide-react";
 import assistantImg from "@/assets/assistant.png";
 import koelkast1 from "@/assets/koelkast1.jpg";
 import koelkast2 from "@/assets/koelkast2.jpg";
@@ -484,6 +484,13 @@ function Composer() {
           placeholder="Stel je vraag aan Marktplaats..."
           className="max-h-24 flex-1 resize-none bg-transparent py-2 text-[14px] leading-[20px] outline-none placeholder:text-muted-foreground"
         />
+        <button
+          type="button"
+          aria-label="Spreek je vraag in"
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+        >
+          <Mic className="h-5 w-5" />
+        </button>
         <button
           type="submit"
           aria-label="Verstuur"

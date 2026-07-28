@@ -1,7 +1,8 @@
-import { Search, Home, MessagesSquare, Camera, Bell, CircleUser, Sparkles } from "lucide-react";
+import { Search, Home, MessagesSquare, Camera, Bell, CircleUser, Sparkles, Plus, ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { NAV_MODE } from "@/lib/layout-settings";
 import { useChat } from "@/lib/chat-store";
+import { useDemoMode } from "@/lib/demo-mode";
 
 type Completion = {
   completion: string;
@@ -14,7 +15,32 @@ function buildSearchUrl(term: string) {
   return `https://www.marktplaats.nl/q/${encodeURIComponent(slug).replace(/%2B/g, "+")}/#postcode:1053HE|view:gallery-view`;
 }
 
+function IntegratedSearchBar() {
+  const { open } = useChat();
+  return (
+    <button
+      type="button"
+      onClick={open}
+      className="flex w-full items-end gap-2 rounded-md bg-white px-3 py-2.5 text-left shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+    >
+      <Plus className="h-5 w-5 shrink-0 text-muted-foreground" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-[14px] leading-[18px] text-muted-foreground">
+          Chat met je Marktplaatsassistent
+        </span>
+        <span className="block text-[11px] leading-[14px] text-muted-foreground/70">
+          Typ een vraag of upload een foto
+        </span>
+      </span>
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f5b48a] text-white shadow-sm">
+        <ArrowUp className="h-4 w-4" strokeWidth={2.75} />
+      </span>
+    </button>
+  );
+}
+
 export function MpHeader() {
+  const { mode } = useDemoMode();
   const [q, setQ] = useState("");
   const [suggestions, setSuggestions] = useState<Completion[]>([]);
   const [open, setOpen] = useState(false);
@@ -74,24 +100,30 @@ export function MpHeader() {
     <header className="sticky top-0 z-30 bg-[#f5b48a]">
       <div ref={wrapRef} className="relative px-3 py-3">
         <div className="flex items-center gap-2">
-          <form onSubmit={submit} className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 rounded-md bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
-              <Search className="h-4 w-4 text-muted-foreground" />
-              <input
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                onFocus={() => {
-                  setFocused(true);
-                  if (suggestions.length) setOpen(true);
-                }}
-                onBlur={() => setTimeout(() => setFocused(false), 150)}
-                type="search"
-                enterKeyHint="search"
-                className="w-full bg-transparent text-[14px] leading-[18px] outline-none placeholder:text-muted-foreground"
-                placeholder="Zoek in Marktplaats"
-              />
+          {mode === "integrated-search" ? (
+            <div className="min-w-0 flex-1">
+              <IntegratedSearchBar />
             </div>
-          </form>
+          ) : (
+            <form onSubmit={submit} className="min-w-0 flex-1">
+              <div className="flex items-center gap-2 rounded-md bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
+                <Search className="h-4 w-4 text-muted-foreground" />
+                <input
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  onFocus={() => {
+                    setFocused(true);
+                    if (suggestions.length) setOpen(true);
+                  }}
+                  onBlur={() => setTimeout(() => setFocused(false), 150)}
+                  type="search"
+                  enterKeyHint="search"
+                  className="w-full bg-transparent text-[14px] leading-[18px] outline-none placeholder:text-muted-foreground"
+                  placeholder="Zoek in Marktplaats"
+                />
+              </div>
+            </form>
+          )}
           {NAV_MODE === "assistant" && (
             <button
               type="button"
