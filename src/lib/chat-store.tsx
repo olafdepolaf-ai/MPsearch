@@ -4,12 +4,13 @@ export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   text: string;
-  cards?: "koelkasten" | "plug" | "koelbox-20-alt" | "racefietsen";
+  cards?: "koelkasten" | "plug" | "koelbox-20-alt" | "racefietsen" | "koelkast-destination-choice";
 };
 
 export type ChatView = "closed" | "peek" | "open";
 export type ChatFlow =
   | "intro"
+  | "koelkast-destination-choice"
   | "koelkast-results"
   | "racefiets-results"
   | "suggestion-fallback"
@@ -27,6 +28,8 @@ type ChatCtx = {
   open: () => void;
   close: () => void;
   pickSuggestion: (label: string) => void;
+  chooseMarktplaatsKoelkast: () => void;
+  chooseDestinationKoelkast: () => void;
   askPlug: () => void;
   enterProduct: (productTitle: string) => void;
   enterKoelbox60: () => void;
@@ -118,15 +121,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           return;
         }
         if (label === "Een koelkast voor op vakantie") {
-          setFlow("koelkast-results");
+          setFlow("koelkast-destination-choice");
           setMessages((prev) => [
             ...prev,
             { id: nextId(), role: "user", text: label },
             {
               id: nextId(),
               role: "assistant",
-              text: "Leuk plan! Ik heb een paar koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
-              cards: "koelkasten",
+              text:
+                "Wil je 'm gewoon in Nederland kopen op Marktplaats, of liever op je vakantiebestemming? Ga je naar Frankrijk, Italië of Duitsland? Dan kan ik ook zoeken bij de zusterwebsites van Marktplaats daar — bijvoorbeeld in de buurt van je bestemming.",
+              cards: "koelkast-destination-choice",
             },
           ]);
           return;
@@ -143,6 +147,36 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             id: nextId(),
             role: "assistant",
             text: "Daar kan ik je in deze demo nog niet mee helpen — probeer 'Een koelkast voor op vakantie' of 'Betaalbare racefiets' voor een voorbeeld van hoe ik zoekopdrachten oppak.",
+          },
+        ]);
+      },
+      chooseMarktplaatsKoelkast: () => {
+        setView("open");
+        setFlow("koelkast-results");
+        setRevealFrom(messages.length + 1);
+        setMessages((prev) => [
+          ...prev,
+          { id: nextId(), role: "user", text: "Koop op Marktplaats" },
+          {
+            id: nextId(),
+            role: "assistant",
+            text: "Leuk plan! Ik heb een paar koelkasten gevonden die perfect passen in een caravan, camper of tent. Swipe hieronder om te bekijken:",
+            cards: "koelkasten",
+          },
+        ]);
+      },
+      chooseDestinationKoelkast: () => {
+        setView("open");
+        setFlow("suggestion-fallback");
+        setRevealFrom(messages.length + 1);
+        setMessages((prev) => [
+          ...prev,
+          { id: nextId(), role: "user", text: "Koop op vakantiebestemming" },
+          {
+            id: nextId(),
+            role: "assistant",
+            text:
+              "Zoeken bij de zusterwebsites van Marktplaats op je bestemming (zoals Leboncoin in Frankrijk, Subito in Italië of eBay Kleinanzeigen in Duitsland) werkt nog niet in deze demo — probeer 'Koop op Marktplaats' voor een voorbeeld.",
           },
         ]);
       },

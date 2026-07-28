@@ -163,7 +163,18 @@ export function AssistantFab() {
 
 
 export function ChatWindow() {
-  const { view, close, flow, messages, revealFrom, askPlug, pickSuggestion, askKofferbak } = useChat();
+  const {
+    view,
+    close,
+    flow,
+    messages,
+    revealFrom,
+    askPlug,
+    pickSuggestion,
+    askKofferbak,
+    chooseMarktplaatsKoelkast,
+    chooseDestinationKoelkast,
+  } = useChat();
   const navigate = useNavigate();
   const onPickProduct = (id: string) => navigate({ to: "/item/$id", params: { id } });
 
@@ -211,6 +222,8 @@ export function ChatWindow() {
                   revealFrom={revealFrom}
                   flow={flow}
                   onPickProduct={onPickProduct}
+                  onChooseMarktplaats={chooseMarktplaatsKoelkast}
+                  onChooseDestination={chooseDestinationKoelkast}
                 />
               )}
             </div>
@@ -230,11 +243,15 @@ function MessageStream({
   revealFrom,
   flow,
   onPickProduct,
+  onChooseMarktplaats,
+  onChooseDestination,
 }: {
   messages: ChatMessage[];
   revealFrom: number;
   flow: string;
   onPickProduct: (id: string) => void;
+  onChooseMarktplaats: () => void;
+  onChooseDestination: () => void;
 }) {
   const { visible, typing } = useMessageReveal(messages, revealFrom);
   const done = visible.length === messages.length && !typing;
@@ -288,6 +305,9 @@ function MessageStream({
           {m.cards === "racefietsen" && (
             <ProductSwiper products={racefietsProducts} onPick={onPickProduct} />
           )}
+          {m.cards === "koelkast-destination-choice" && (
+            <DestinationChoice onMarktplaats={onChooseMarktplaats} onDestination={onChooseDestination} />
+          )}
         </div>
       ))}
 
@@ -306,6 +326,31 @@ function MessageStream({
         <QuickReplies replies={["Toon meer alternatieven", "Werkt deze op campinggas?", "Verloopstekker nodig?"]} />
       )}
     </>
+  );
+}
+
+function DestinationChoice({
+  onMarktplaats,
+  onDestination,
+}: {
+  onMarktplaats: () => void;
+  onDestination: () => void;
+}) {
+  return (
+    <div className="mt-3 flex flex-col gap-2 pl-9">
+      <button
+        onClick={onMarktplaats}
+        className="rounded-full border border-assistant/30 bg-white px-3.5 py-2 text-left text-xs font-medium text-assistant transition active:scale-[0.98] hover:bg-muted/40"
+      >
+        🇳🇱 Koop op Marktplaats
+      </button>
+      <button
+        onClick={onDestination}
+        className="rounded-full border border-assistant/30 bg-white px-3.5 py-2 text-left text-xs font-medium text-assistant transition active:scale-[0.98] hover:bg-muted/40"
+      >
+        🚗 Koop op vakantiebestemming
+      </button>
+    </div>
   );
 }
 
