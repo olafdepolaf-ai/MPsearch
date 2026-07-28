@@ -199,7 +199,9 @@ function ItemPage() {
         </div>
       </div>
 
-      <MpBottomNav />
+      <div className="sticky bottom-0 z-30">
+        <MpBottomNav />
+      </div>
     </div>
   );
 }
