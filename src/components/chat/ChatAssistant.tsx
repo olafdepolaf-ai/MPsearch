@@ -1,6 +1,6 @@
 import { useChat } from "@/lib/chat-store";
 import { NAV_MODE } from "@/lib/layout-settings";
-import { X, ArrowUp, Plus, Mic, ChevronDown, Sparkles, Train, Snowflake, Armchair, Bike } from "lucide-react";
+import { X, ArrowUp, Plus, Mic, ChevronDown, Sparkles, Train } from "lucide-react";
 import assistantImg from "@/assets/assistant.png";
 import koelkast1 from "@/assets/koelkast1.jpg";
 import koelkast2 from "@/assets/koelkast2.jpg";
@@ -423,18 +423,18 @@ function ProductSwiper({
 }
 
 function IntroHome({ onPick }: { onPick: (label: string) => void }) {
-  const actions = [
-    { icon: Armchair, label: "Slaapmatjes & stoeltjes" },
-    { icon: Snowflake, label: "Compacte koelboxen", sub: "Amsterdam" },
-    { icon: Train, label: "Toon alleen bereikbaar met OV", highlight: true },
-  ];
-  const faqs = [
-    "Koelbox op gas of stroom?",
-    "Lichtgewicht stoeltjes in de buurt",
-    "Wat past makkelijk in trein of fietstas?",
+  const [ovFilterActive, setOvFilterActive] = useState(true);
+  // One flat, swipeable row — extend this list freely, pills size to their
+  // own text so nothing ever gets cut off.
+  const suggestions = [
+    { emoji: "🛏️", label: "Slaapmatjes & stoeltjes" },
+    { emoji: "🧊", label: "Compacte koelboxen · Amsterdam" },
+    { emoji: "💬", label: "Koelbox op gas of stroom?" },
+    { emoji: "💬", label: "Lichtgewicht stoeltjes in de buurt" },
+    { emoji: "💬", label: "Wat past makkelijk in trein of fietstas?" },
   ];
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* Greeting */}
       <div className="flex items-start gap-2.5">
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f5b48a] shadow-sm">
@@ -454,50 +454,34 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
         </div>
       </div>
 
-      {/* Action buttons */}
-      <div className="grid grid-cols-2 gap-2">
-        {actions.map((a) => {
-          const Icon = a.icon;
-          const isWide = a.highlight;
-          return (
-            <button
-              key={a.label}
-              onClick={() => onPick(a.label)}
-              className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-left transition active:scale-[0.98] ${
-                isWide
-                  ? "col-span-2 border-[#f5b48a]/60 bg-[#f5b48a]/10"
-                  : "border-border bg-white hover:bg-muted/40"
-              }`}
-            >
-              <Icon className={`h-4 w-4 shrink-0 ${isWide ? "text-[#c97a4a]" : "text-primary"}`} />
-              <div className="min-w-0">
-                <p className="truncate text-[13px] font-semibold text-foreground">{a.label}</p>
-                {a.sub && (
-                  <p className="truncate text-[11px] text-muted-foreground">{a.sub}</p>
-                )}
-              </div>
-            </button>
-          );
-        })}
-      </div>
+      {/* Active filter — dismissible, like other Marktplaats filters */}
+      {ovFilterActive && (
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/30 bg-primary/10 py-1 pl-3 pr-1.5 text-[12px] font-medium text-primary">
+          <Train className="h-3.5 w-3.5" />
+          Alleen bereikbaar met OV
+          <button
+            type="button"
+            onClick={() => setOvFilterActive(false)}
+            aria-label="Filter uitzetten"
+            className="flex h-4 w-4 items-center justify-center rounded-full hover:bg-primary/20"
+          >
+            <X className="h-3 w-3" />
+          </button>
+        </span>
+      )}
 
-      {/* FAQ bubbles */}
-      <div>
-        <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-          Veelgestelde vragen tijdens het zoeken
-        </p>
-        <div className="flex flex-col gap-2">
-          {faqs.map((q) => (
-            <button
-              key={q}
-              onClick={() => onPick(q)}
-              className="flex items-center gap-2 rounded-full border border-border bg-white px-3.5 py-2 text-left text-[13px] text-foreground transition active:scale-[0.99] hover:bg-muted/40"
-            >
-              <span className="text-[13px]">💬</span>
-              <span className="truncate">{q}</span>
-            </button>
-          ))}
-        </div>
+      {/* Suggestions — single horizontal swipe row */}
+      <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+        {suggestions.map((s) => (
+          <button
+            key={s.label}
+            onClick={() => onPick(s.label)}
+            className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border bg-white px-3.5 py-2 text-[13px] text-foreground transition active:scale-[0.98] hover:bg-muted/40"
+          >
+            <span>{s.emoji}</span>
+            {s.label}
+          </button>
+        ))}
       </div>
     </div>
   );
