@@ -13,7 +13,11 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ChatProvider } from "../lib/chat-store";
 import { DemoModeProvider, DemoModeSwitcher } from "../lib/demo-mode";
+import { AccountMenuProvider } from "../lib/account-menu";
+import { PuurMarktplaatsProvider } from "../lib/puur-marktplaats";
 import { AssistantFab, ChatWindow } from "../components/chat/ChatAssistant";
+import { AccountMenuDrawer } from "../components/marktplaats/Chrome";
+import { PuurMarktplaatsOverlay } from "../components/marktplaats/PuurMarktplaats";
 
 function NotFoundComponent() {
   return (
@@ -123,15 +127,21 @@ function RootComponent() {
       <DemoModeProvider>
         <DemoModeSwitcher />
         <ChatProvider>
-          <div className="min-h-screen bg-slate-200 md:flex md:h-dvh md:items-center md:justify-center md:py-6">
-            <div className="relative mx-auto w-full max-w-[430px] overflow-hidden bg-white md:aspect-[430/900] md:h-[min(900px,calc(100dvh_-_3rem))] md:w-auto md:rounded-[2.5rem] md:border-[10px] md:border-slate-900 md:shadow-2xl md:[transform:translateZ(0)]">
-              <div className="relative h-full overflow-y-auto">
-                <Outlet />
+          <AccountMenuProvider>
+            <PuurMarktplaatsProvider>
+              <div className="min-h-screen bg-slate-200 md:flex md:h-dvh md:items-center md:justify-center md:py-6">
+                <div className="relative mx-auto w-full max-w-[430px] overflow-hidden bg-white md:aspect-[430/900] md:h-[min(900px,calc(100dvh_-_3rem))] md:w-auto md:rounded-[2.5rem] md:border-[10px] md:border-slate-900 md:shadow-2xl md:[transform:translateZ(0)]">
+                  <div className="relative h-full overflow-y-auto">
+                    <Outlet />
+                  </div>
+                  <AssistantFab />
+                  <ChatWindow />
+                  <AccountMenuDrawer />
+                  <PuurMarktplaatsOverlay />
+                </div>
               </div>
-              <AssistantFab />
-              <ChatWindow />
-            </div>
-          </div>
+            </PuurMarktplaatsProvider>
+          </AccountMenuProvider>
         </ChatProvider>
       </DemoModeProvider>
     </QueryClientProvider>

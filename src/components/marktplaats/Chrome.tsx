@@ -1,9 +1,34 @@
-import { Search, Home, MessagesSquare, Camera, Bell, CircleUser, Sparkles, Plus, ArrowUp } from "lucide-react";
+import {
+  Search,
+  Home,
+  MessagesSquare,
+  Camera,
+  Bell,
+  CircleUser,
+  Sparkles,
+  Plus,
+  ArrowUp,
+  Menu,
+  Tag,
+  Heart,
+  Gavel,
+  Bookmark,
+  Store,
+  History,
+  LogOut,
+} from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { NAV_MODE } from "@/lib/layout-settings";
 import { useChat } from "@/lib/chat-store";
 import { useDemoMode } from "@/lib/demo-mode";
+import { useAccountMenu } from "@/lib/account-menu";
+import { usePuurMarktplaats } from "@/lib/puur-marktplaats";
+
+// Same blue as the item-page action buttons (--primary), given the ChatGPT-style
+// glossy pill treatment below — a Marktplaats-toned take on that look.
+const plusButtonClass =
+  "bg-gradient-to-b from-[oklch(0.6_0.13_250)] to-[oklch(0.46_0.13_250)] text-white shadow-[0_2px_4px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,0.35)] active:scale-95";
 
 type Completion = {
   completion: string;
@@ -39,6 +64,8 @@ export function IntegratedSearchBar() {
 
 export function MpHeader() {
   const { mode } = useDemoMode();
+  const { toggle: toggleAccountMenu } = useAccountMenu();
+  const { show: showPuurMarktplaats } = usePuurMarktplaats();
   const [q, setQ] = useState("");
   const [suggestions, setSuggestions] = useState<Completion[]>([]);
   const [open, setOpen] = useState(false);
@@ -97,7 +124,27 @@ export function MpHeader() {
   return (
     <header className="sticky top-0 z-30 bg-[#f5b48a]">
       <div ref={wrapRef} className="relative px-3 py-3">
-        <div className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-end" : ""}`}>
+        <div className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-between" : ""}`}>
+          {mode === "integrated-search" && (
+            <div className="flex min-w-0 shrink-0 items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleAccountMenu}
+                aria-label="Menu"
+                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${plusButtonClass}`}
+              >
+                <Menu className="h-5 w-5" />
+              </button>
+              <button
+                type="button"
+                onClick={showPuurMarktplaats}
+                className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold ${plusButtonClass}`}
+              >
+                <Sparkles className="h-3.5 w-3.5" fill="currentColor" />
+                Puur Marktplaats
+              </button>
+            </div>
+          )}
           {mode === "chat-menu" && (
             <form onSubmit={submit} className="min-w-0 flex-1">
               <div className="flex items-center gap-2 rounded-md bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
@@ -227,5 +274,70 @@ export function MpBottomNav() {
         })}
       </ul>
     </nav>
+  );
+}
+
+const accountMenuItems = [
+  { icon: Tag, label: "Advertenties" },
+  { icon: Heart, label: "Favorieten" },
+  { icon: Gavel, label: "Biedingen" },
+  { icon: Bookmark, label: "Bewaarde zoekopdrachten" },
+  { icon: Store, label: "Favoriete verkopers" },
+  { icon: History, label: "Recent bekeken" },
+  { icon: CircleUser, label: "Profiel & ervaringen" },
+];
+
+/** Side drawer opened from the AI-search header's hamburger icon. Slides in
+ * from the left, overlaying the whole app (header/content/bottom nav) since
+ * it's mounted at the root alongside AssistantFab/ChatWindow. */
+export function AccountMenuDrawer() {
+  const { open, close } = useAccountMenu();
+  if (!open) return null;
+  return (
+    <>
+      <div className="animate-fade-in absolute inset-0 z-40 bg-black/30" onClick={close} />
+      <div className="animate-slide-in-left absolute inset-y-0 left-0 z-50 flex w-[78%] max-w-[300px] flex-col bg-white shadow-2xl">
+        <div className="flex items-center px-3 py-3">
+          <button
+            type="button"
+            onClick={close}
+            aria-label="Menu sluiten"
+            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${plusButtonClass}`}
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="flex items-center gap-3 border-b px-4 pb-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-[15px] font-bold text-primary-foreground">
+            S
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-foreground">Stefano</p>
+            <p className="text-[12px] text-muted-foreground">Mijn Marktplaats</p>
+          </div>
+        </div>
+        <nav className="min-h-0 flex-1 overflow-y-auto py-2">
+          {accountMenuItems.map((item) => (
+            <button
+              key={item.label}
+              type="button"
+              className="flex w-full items-center gap-3 px-4 py-3 text-left active:bg-muted"
+            >
+              <item.icon className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
+              <span className="text-[14px] font-medium text-foreground">{item.label}</span>
+            </button>
+          ))}
+        </nav>
+        <div className="border-t px-2 py-2">
+          <button
+            type="button"
+            className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-destructive active:bg-destructive/10"
+          >
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
+            <span className="text-[14px] font-medium">Uitloggen</span>
+          </button>
+        </div>
+      </div>
+    </>
   );
 }
