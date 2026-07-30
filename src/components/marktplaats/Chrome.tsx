@@ -21,7 +21,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Link } from "@tanstack/react-router";
 import { NAV_MODE } from "@/lib/layout-settings";
 import { useChat } from "@/lib/chat-store";
-import { useDemoMode } from "@/lib/demo-mode";
+import { useDemoMode, DEMO_MODE_OPTIONS } from "@/lib/demo-mode";
 import { useAccountMenu } from "@/lib/account-menu";
 import { usePuurMarktplaats } from "@/lib/puur-marktplaats";
 
@@ -125,18 +125,18 @@ export function MpHeader() {
     <header className="sticky top-0 z-30 bg-[#f5b48a]">
       <div ref={wrapRef} className="relative px-3 py-3">
         <div className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-between" : ""}`}>
-          {mode === "integrated-search" && (
-            <div className="flex min-w-0 shrink-0 items-center gap-2">
-              {!accountMenuOpen && (
-                <button
-                  type="button"
-                  onClick={toggleAccountMenu}
-                  aria-label="Menu"
-                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground/85 active:scale-95"
-                >
-                  <Menu className="h-5 w-5" strokeWidth={1.9} />
-                </button>
-              )}
+          <div className="flex min-w-0 shrink-0 items-center gap-2">
+            {!accountMenuOpen && (
+              <button
+                type="button"
+                onClick={toggleAccountMenu}
+                aria-label="Menu"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground/85 active:scale-95"
+              >
+                <Menu className="h-5 w-5" strokeWidth={1.9} />
+              </button>
+            )}
+            {mode === "integrated-search" && (
               <button
                 type="button"
                 onClick={showPuurMarktplaats}
@@ -144,8 +144,8 @@ export function MpHeader() {
               >
                 Puur Marktplaats
               </button>
-            </div>
-          )}
+            )}
+          </div>
           {mode === "chat-menu" && (
             <form onSubmit={submit} className="min-w-0 flex-1">
               <div className="flex items-center gap-2 rounded-md bg-white px-3 py-2.5 shadow-[0_1px_2px_rgba(0,0,0,0.06)]">
@@ -293,6 +293,7 @@ const accountMenuItems = [
  * it's mounted at the root alongside AssistantFab/ChatWindow. */
 export function AccountMenuDrawer() {
   const { open, close } = useAccountMenu();
+  const { mode, setMode } = useDemoMode();
   if (!open) return null;
   return (
     <>
@@ -337,6 +338,30 @@ export function AccountMenuDrawer() {
             <LogOut className="h-[18px] w-[18px] shrink-0" />
             <span className="text-[14px] font-medium">Uitloggen</span>
           </button>
+        </div>
+
+        {/* Demo switcher — mirrors the floating DemoModeSwitcher (desktop-only),
+            surfaced here too so both scenarios stay reachable from within the app. */}
+        <div className="border-t px-4 py-3">
+          <p className="mb-2 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+            Demo
+          </p>
+          <div className="flex gap-2">
+            {DEMO_MODE_OPTIONS.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                onClick={() => setMode(o.value)}
+                className={`flex-1 rounded-full border px-2 py-1.5 text-[12px] font-medium active:scale-[0.98] ${
+                  mode === o.value
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border text-muted-foreground"
+                }`}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </>
