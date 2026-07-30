@@ -64,7 +64,7 @@ export function IntegratedSearchBar() {
 
 export function MpHeader() {
   const { mode } = useDemoMode();
-  const { toggle: toggleAccountMenu } = useAccountMenu();
+  const { open: accountMenuOpen, toggle: toggleAccountMenu } = useAccountMenu();
   const { show: showPuurMarktplaats } = usePuurMarktplaats();
   const [q, setQ] = useState("");
   const [suggestions, setSuggestions] = useState<Completion[]>([]);
@@ -127,20 +127,21 @@ export function MpHeader() {
         <div className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-between" : ""}`}>
           {mode === "integrated-search" && (
             <div className="flex min-w-0 shrink-0 items-center gap-2">
-              <button
-                type="button"
-                onClick={toggleAccountMenu}
-                aria-label="Menu"
-                className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${plusButtonClass}`}
-              >
-                <Menu className="h-5 w-5" />
-              </button>
+              {!accountMenuOpen && (
+                <button
+                  type="button"
+                  onClick={toggleAccountMenu}
+                  aria-label="Menu"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground/85 active:scale-95"
+                >
+                  <Menu className="h-5 w-5" strokeWidth={1.9} />
+                </button>
+              )}
               <button
                 type="button"
                 onClick={showPuurMarktplaats}
-                className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold ${plusButtonClass}`}
+                className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold ${plusButtonClass}`}
               >
-                <Sparkles className="h-3.5 w-3.5" fill="currentColor" />
                 Puur Marktplaats
               </button>
             </div>
@@ -302,9 +303,9 @@ export function AccountMenuDrawer() {
             type="button"
             onClick={close}
             aria-label="Menu sluiten"
-            className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${plusButtonClass}`}
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground/85 hover:bg-muted active:scale-95"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-5 w-5" strokeWidth={1.9} />
           </button>
         </div>
         <div className="flex items-center gap-3 border-b px-4 pb-4">
