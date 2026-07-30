@@ -1,7 +1,7 @@
 import { MpHeader, MpBottomNav, IntegratedSearchBar } from "./Chrome";
 import { Heart, ArrowRight, ChevronDown, ChevronUp, Star } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { InspirationBubbles, suggestions } from "../chat/InspirationBubbles";
 import { useChat } from "@/lib/chat-store";
 import { useDemoMode } from "@/lib/demo-mode";
@@ -190,8 +190,22 @@ export function MpHome() {
     reset();
   }, []);
 
+  // The router's scrollRestoration re-applies "/"'s last scroll position
+  // on mount, which runs after this component's own effects — so a plain
+  // scrollIntoView here gets immediately overridden. Deferring to the next
+  // frame lets it run after restoration, so tapping the bottom-nav Home
+  // icon always lands at the top instead of wherever the homepage was
+  // previously scrolled to.
+  const pageTopRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => {
+      pageTopRef.current?.scrollIntoView({ block: "start" });
+    });
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
   return (
-    <div className="flex min-h-full flex-col bg-white">
+    <div ref={pageTopRef} className="flex min-h-full flex-col bg-white">
       <MpHeader />
       {mode === "integrated-search" && <IntegratedChatDock />}
 

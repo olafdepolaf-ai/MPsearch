@@ -1,6 +1,19 @@
 import { useChat } from "@/lib/chat-store";
 import { NAV_MODE } from "@/lib/layout-settings";
-import { X, ArrowUp, Plus, Mic, ChevronDown, Sparkles, Train } from "lucide-react";
+import {
+  X,
+  ArrowUp,
+  Plus,
+  Mic,
+  ChevronDown,
+  ChevronLeft,
+  History,
+  MoreVertical,
+  ExternalLink,
+  Pencil,
+  Sparkles,
+  Train,
+} from "lucide-react";
 import assistantImg from "@/assets/assistant.png";
 import koelkast1 from "@/assets/koelkast1.jpg";
 import koelkast2 from "@/assets/koelkast2.jpg";
@@ -178,6 +191,14 @@ export function ChatWindow() {
   const navigate = useNavigate();
   const onPickProduct = (id: string) => navigate({ to: "/item/$id", params: { id } });
 
+  const [panel, setPanel] = useState<"none" | "history" | "settings">("none");
+  // Reopening the assistant (or dropping to peek) always starts back at the
+  // normal chat view — history/settings are a transient overlay, not part of
+  // the scripted flow state.
+  useEffect(() => {
+    if (view !== "open") setPanel("none");
+  }, [view]);
+
   if (view === "closed") return null;
 
   const isPeek = view === "peek";
@@ -191,25 +212,69 @@ export function ChatWindow() {
         />
       )}
       <div
-        className={`animate-sheet-up absolute inset-x-0 bottom-0 z-50 flex flex-col rounded-t-3xl border-t bg-white shadow-2xl ${
+        className={`animate-sheet-up absolute inset-x-0 bottom-0 z-50 flex flex-col overflow-hidden rounded-t-3xl border-t bg-white shadow-2xl ${
           isPeek ? "h-[120px]" : "h-[85%]"
         }`}
 
       >
-        {/* Handle + close */}
-        <div className="flex items-center justify-end border-b px-4 py-2">
-          <button
-            onClick={close}
-            className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
-          >
-            {isPeek ? <ChevronDown className="h-4 w-4 rotate-180" /> : <X className="h-4 w-4" />}
-          </button>
-        </div>
-
         {isPeek ? (
-          <PeekProductPrompt onAsk={askPlug} />
+          <>
+            <div className="flex items-center justify-end border-b px-4 py-2">
+              <button
+                onClick={close}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+              >
+                <ChevronDown className="h-4 w-4 rotate-180" />
+              </button>
+            </div>
+            <PeekProductPrompt onAsk={askPlug} />
+          </>
+        ) : panel === "history" ? (
+          <ChatHistoryPanel onBack={() => setPanel("none")} />
+        ) : panel === "settings" ? (
+          <SettingsPanel onBack={() => setPanel("none")} onOpenHistory={() => setPanel("history")} />
         ) : (
           <>
+            {/* Header: collapse on the left, assistant identity + history/settings on the right */}
+            <div className="flex items-center justify-between border-b px-2 py-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={close}
+                  aria-label="Chat inklappen"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+                >
+                  <ChevronDown className="h-5 w-5" />
+                </button>
+                <div className="flex items-center gap-1.5">
+                  <div className="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#f5b48a]">
+                    <Sparkles
+                      className="absolute right-0 top-0 h-2 w-2 -translate-y-0.5 translate-x-0.5 text-white"
+                      fill="currentColor"
+                      strokeWidth={2.5}
+                    />
+                    <span className="font-serif text-[12px] leading-none font-bold text-white">M</span>
+                  </div>
+                  <span className="text-[14px] font-semibold text-foreground">Marktplaats Assistent</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-0.5">
+                <button
+                  onClick={() => setPanel("history")}
+                  aria-label="Chatgeschiedenis"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+                >
+                  <History className="h-[18px] w-[18px]" />
+                </button>
+                <button
+                  onClick={() => setPanel("settings")}
+                  aria-label="Instellingen"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+                >
+                  <MoreVertical className="h-[18px] w-[18px]" />
+                </button>
+              </div>
+            </div>
+
             {/* Messages */}
             <div className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
               {flow === "intro" ? (
@@ -235,6 +300,116 @@ export function ChatWindow() {
 
       </div>
     </>
+  );
+}
+
+/** Shared back-chevron + centered title bar for the history/settings overlays. */
+function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
+  return (
+    <div className="flex items-center gap-2 border-b px-2 py-2">
+      <button
+        onClick={onBack}
+        aria-label="Terug naar chat"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+      <span className="flex-1 pr-8 text-center text-[15px] font-semibold text-foreground">{title}</span>
+    </div>
+  );
+}
+
+type ChatHistoryGroup = {
+  date: string;
+  chats: { title: string; platform: "App" | "Web" }[];
+};
+
+const chatHistoryGroups: ChatHistoryGroup[] = [
+  {
+    date: "30 juli",
+    chats: [
+      { title: "Beste tent voor 4 personen", platform: "App" },
+      { title: "Helinox kampeerstoeltjes", platform: "App" },
+      { title: "Slaapmatjes", platform: "App" },
+      { title: "Koelbox voor op vakantie", platform: "App" },
+    ],
+  },
+  {
+    date: "29 juli",
+    chats: [{ title: "Betaalbare racefiets", platform: "Web" }],
+  },
+  {
+    date: "27 juli",
+    chats: [
+      { title: "Nieuwe Sony FE-lens", platform: "Web" },
+      { title: "Advertentie geplaatst", platform: "App" },
+    ],
+  },
+];
+
+function ChatHistoryPanel({ onBack }: { onBack: () => void }) {
+  return (
+    <div className="animate-slide-in-right flex flex-1 flex-col overflow-hidden">
+      <PanelHeader title="Chatgeschiedenis" onBack={onBack} />
+      <div className="flex-1 overflow-y-auto px-4 py-4">
+        <p className="text-[13px] leading-[18px] text-muted-foreground">
+          Om je chats te beheren, bezoek de Marktplaats{" "}
+          <button type="button" className="font-medium text-primary hover:underline">
+            Chathistorie
+          </button>
+          .
+        </p>
+
+        <div className="mt-5 space-y-5">
+          {chatHistoryGroups.map((group) => (
+            <div key={group.date}>
+              <p className="mb-2 text-[12px] font-medium text-muted-foreground">{group.date}</p>
+              <div className="space-y-3 pl-2">
+                {group.chats.map((c) => (
+                  <button key={c.title} type="button" className="block w-full text-left">
+                    <p className="text-[14px] text-foreground">{c.title}</p>
+                    <p className="mt-0.5 text-[12px] text-muted-foreground">
+                      {group.date} · {c.platform}
+                    </p>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-center text-[12px] font-medium text-muted-foreground">
+          Einde van chatgeschiedenis
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function SettingsPanel({ onBack, onOpenHistory }: { onBack: () => void; onOpenHistory: () => void }) {
+  const items: { icon: typeof History; label: string; onClick?: () => void }[] = [
+    { icon: History, label: "Chatgeschiedenis", onClick: onOpenHistory },
+    { icon: ExternalLink, label: "Aan de slag" },
+    { icon: Pencil, label: "Beheer opgeslagen zoekopdrachten" },
+  ];
+  return (
+    <div className="animate-slide-in-right flex flex-1 flex-col overflow-hidden">
+      <PanelHeader title="Instellingen" onBack={onBack} />
+      <div className="flex-1 overflow-y-auto">
+        {items.map((item) => (
+          <button
+            key={item.label}
+            type="button"
+            onClick={item.onClick}
+            className="flex w-full items-center gap-3 border-b px-4 py-3.5 text-left last:border-b-0"
+          >
+            <item.icon className="h-[18px] w-[18px] text-muted-foreground" />
+            <span className="flex-1 text-[14px] font-medium text-foreground">{item.label}</span>
+            <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground" />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -362,22 +537,10 @@ function Koelbox60Intro({ onAskKofferbak }: { onAskKofferbak: () => void }) {
   ];
   return (
     <div className="space-y-5">
-      <div className="flex items-start gap-2.5">
-        <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f5b48a] shadow-sm">
-          <Sparkles
-            className="absolute right-0 top-0 h-3 w-3 -translate-y-0.5 translate-x-0.5 text-white"
-            fill="currentColor"
-            strokeWidth={2.5}
-          />
-          <span className="font-serif text-[18px] leading-none font-bold text-white">M</span>
-        </div>
-        <div className="flex-1 pt-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#f5b48a]">
-            Marktplaats Assistent
-          </p>
-          <p className="mt-1 text-[14px] leading-[19px] text-foreground">
-            Vragen over deze koelbox? Kies een onderwerp of typ je vraag.
-          </p>
+      <div className="flex items-end gap-2">
+        <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
+        <div className="max-w-[78%] rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2.5 text-sm text-foreground">
+          Vragen over deze koelbox? Kies een onderwerp of typ je vraag.
         </div>
       </div>
 
@@ -489,21 +652,10 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
   return (
     <div className="space-y-4">
       {/* Greeting */}
-      <div className="flex items-start gap-2.5">
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#f5b48a] shadow-sm">
-          <Sparkles className="absolute h-3 w-3 translate-x-2.5 -translate-y-2.5 text-white" fill="currentColor" strokeWidth={2.5} />
-          <span className="font-serif text-[18px] leading-none font-bold text-white">M</span>
-        </div>
-        <div className="flex-1 pt-1">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-[#f5b48a]">
-            Marktplaats Assistent
-          </p>
-          <p className="mt-1 text-[15px] leading-[20px] font-medium text-foreground">
-            Hoi Stefano, je kampeeruitrusting is bijna compleet.
-          </p>
-          <p className="mt-1 text-[13px] leading-[18px] text-muted-foreground">
-            Waar kan ik mee helpen?
-          </p>
+      <div className="flex items-end gap-2">
+        <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
+        <div className="max-w-[78%] whitespace-pre-line rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2.5 text-sm text-foreground">
+          Hoi Stefano, je kampeeruitrusting is bijna compleet.{"\n"}Waar kan ik mee helpen?
         </div>
       </div>
 
@@ -556,7 +708,7 @@ function Composer() {
         </button>
         <textarea
           rows={1}
-          placeholder="Stel je vraag aan Marktplaats..."
+          placeholder="Stel je vraag..."
           className="max-h-24 flex-1 resize-none bg-transparent py-2 text-[14px] leading-[20px] outline-none placeholder:text-muted-foreground"
         />
         <button

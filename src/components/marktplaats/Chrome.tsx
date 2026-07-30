@@ -1,5 +1,6 @@
 import { Search, Home, MessagesSquare, Camera, Bell, CircleUser, Sparkles, Plus, ArrowUp } from "lucide-react";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { Link } from "@tanstack/react-router";
 import { NAV_MODE } from "@/lib/layout-settings";
 import { useChat } from "@/lib/chat-store";
 import { useDemoMode } from "@/lib/demo-mode";
@@ -165,7 +166,7 @@ export function MpHeader() {
 export function MpBottomNav() {
   const { open } = useChat();
   const items = [
-    { key: "home", icon: Home, label: "Home", active: true },
+    { key: "home", icon: Home, label: "Home", active: true, to: "/" },
     { key: "berichten", icon: MessagesSquare, label: "Berichten" },
     { key: "plaatsen", icon: Camera, label: "Plaatsen" },
     { key: "meldingen", icon: Bell, label: "Meldingen" },
@@ -194,8 +195,8 @@ export function MpBottomNav() {
               </li>
             );
           }
-          return (
-            <li key={it.key} className="flex flex-col items-center justify-center py-2">
+          const content = (
+            <>
               <it.icon
                 className={`h-6 w-6 ${it.active ? "text-primary" : "text-foreground/80"}`}
                 strokeWidth={it.active ? 2.25 : 1.75}
@@ -207,6 +208,17 @@ export function MpBottomNav() {
               >
                 {it.label}
               </span>
+            </>
+          );
+          return (
+            <li key={it.key} className="flex flex-col items-center justify-center py-2">
+              {it.to ? (
+                <Link to={it.to} className="flex flex-col items-center justify-center">
+                  {content}
+                </Link>
+              ) : (
+                content
+              )}
             </li>
           );
         })}
