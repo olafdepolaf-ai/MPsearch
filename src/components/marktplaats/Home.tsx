@@ -157,6 +157,21 @@ const featured: Array<{
   },
 ];
 
+// De ene advertentie die Stefano zelf op dit moment heeft staan — echte
+// listing (marktplaats.nl/v/audio-tv-en-foto/fotocamera-s-digitaal/m2397909785),
+// past bij zijn fotografie-hobby (zie project-mpsearch-persona memory).
+const myAds: typeof featured = [
+  {
+    title: "Sony A7III + lenses & accessoires",
+    price: "€ 1.200,00",
+    loc: "Eindhoven",
+    img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/8bbab6c3-b75c-41da-be0a-ffa84f25a619?rule=ecg_mp_eps$_85",
+    seller: "Stefano",
+    rating: "5.0",
+    reviews: 32,
+  },
+];
+
 
 function IntegratedChatDock() {
   const { pickSuggestion } = useChat();
@@ -179,8 +194,51 @@ function IntegratedChatDock() {
   );
 }
 
+function ListingCard(f: (typeof featured)[number]) {
+  const inner = (
+    <>
+      <div className="flex items-center gap-1.5 px-2 pt-2">
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+          {f.seller[0]}
+        </span>
+        <span className="truncate text-[11px] font-medium text-foreground">{f.seller}</span>
+        <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-muted-foreground">
+          <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
+          {f.rating} <span className="text-muted-foreground/70">({f.reviews})</span>
+        </span>
+      </div>
+      <div className="relative aspect-square bg-muted">
+        <img src={f.img} alt={f.title} className="h-full w-full object-cover" loading="lazy" />
+        <button
+          aria-label="Favoriet"
+          onClick={(e) => e.preventDefault()}
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 shadow"
+        >
+          <Heart className="h-4 w-4 text-foreground" />
+        </button>
+      </div>
+      <div className="p-2.5">
+        <p className="line-clamp-2 min-h-[2.25rem] text-[14px] leading-[18px] font-medium text-foreground">
+          {f.title}
+        </p>
+        <p className="mt-1 font-serif text-[18px] leading-[24px] font-normal text-foreground">{f.price}</p>
+        <p className="mt-0.5 text-[12px] leading-[16px] text-muted-foreground">{f.loc}</p>
+      </div>
+    </>
+  );
+  const cls = "group block overflow-hidden rounded-md border border-border bg-white";
+  return f.id ? (
+    <Link to="/item/$id" params={{ id: f.id }} className={cls}>
+      {inner}
+    </Link>
+  ) : (
+    <article className={cls}>{inner}</article>
+  );
+}
+
 export function MpHome() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"voor-jou" | "mijn">("voor-jou");
   const { mode } = useDemoMode();
   const { reset } = useChat();
 
@@ -317,69 +375,40 @@ export function MpHome() {
         </section>
 
 
-        {/* Voor jou / In je buurt tabs */}
+        {/* Voor jou / In je buurt / Mijn advertenties tabs */}
         <section className="px-3 pt-4">
           <div className="mb-3 flex border-b border-border">
-            <button className="relative px-4 py-2 text-[14px] leading-[18px] font-medium text-primary">
+            <button
+              onClick={() => setActiveTab("voor-jou")}
+              className={`relative px-4 py-2 text-[14px] leading-[18px] font-medium ${
+                activeTab === "voor-jou" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
               Voor jou
-              <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
+              {activeTab === "voor-jou" && (
+                <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
+              )}
             </button>
             <button className="px-4 py-2 text-[14px] leading-[18px] font-medium text-muted-foreground">
               In je buurt
             </button>
+            <button
+              onClick={() => setActiveTab("mijn")}
+              className={`relative px-4 py-2 text-[14px] leading-[18px] font-medium ${
+                activeTab === "mijn" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
+              Mijn advertenties
+              {activeTab === "mijn" && (
+                <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
+              )}
+            </button>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {featured.map((f) => {
-              const inner = (
-                <>
-                  <div className="flex items-center gap-1.5 px-2 pt-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                      {f.seller[0]}
-                    </span>
-                    <span className="truncate text-[11px] font-medium text-foreground">{f.seller}</span>
-                    <span className="flex shrink-0 items-center gap-0.5 text-[11px] text-muted-foreground">
-                      <Star className="h-2.5 w-2.5 fill-amber-400 text-amber-400" />
-                      {f.rating} <span className="text-muted-foreground/70">({f.reviews})</span>
-                    </span>
-                  </div>
-                  <div className="relative aspect-square bg-muted">
-                    <img
-                      src={f.img}
-                      alt={f.title}
-                      className="h-full w-full object-cover"
-                      loading="lazy"
-                    />
-                    <button
-                      aria-label="Favoriet"
-                      onClick={(e) => e.preventDefault()}
-                      className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white/95 shadow"
-                    >
-                      <Heart className="h-4 w-4 text-foreground" />
-                    </button>
-                  </div>
-                  <div className="p-2.5">
-                    <p className="line-clamp-2 min-h-[2.25rem] text-[14px] leading-[18px] font-medium text-foreground">
-                      {f.title}
-                    </p>
-                    <p className="mt-1 font-serif text-[18px] leading-[24px] font-normal text-foreground">
-                      {f.price}
-                    </p>
-                    <p className="mt-0.5 text-[12px] leading-[16px] text-muted-foreground">{f.loc}</p>
-                  </div>
-                </>
-              );
-              const cls = "group block overflow-hidden rounded-md border border-border bg-white";
-              return f.id ? (
-                <Link key={f.title} to="/item/$id" params={{ id: f.id }} className={cls}>
-                  {inner}
-                </Link>
-              ) : (
-                <article key={f.title} className={cls}>
-                  {inner}
-                </article>
-              );
-            })}
+            {(activeTab === "voor-jou" ? featured : myAds).map((f) => (
+              <ListingCard key={f.title} {...f} />
+            ))}
           </div>
         </section>
 
