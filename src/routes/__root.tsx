@@ -129,8 +129,22 @@ function RootComponent() {
         <ChatProvider>
           <AccountMenuProvider>
             <PuurMarktplaatsProvider>
-              <div className="min-h-screen bg-slate-200 md:flex md:h-dvh md:items-center md:justify-center md:py-6">
-                <div className="relative mx-auto w-full max-w-[430px] overflow-hidden bg-white md:aspect-[430/900] md:h-[min(900px,calc(100dvh_-_3rem))] md:w-auto md:rounded-[2.5rem] md:border-[10px] md:border-slate-900 md:shadow-2xl md:[transform:translateZ(0)]">
+              {/* This shell used to be `min-h-screen` (no fixed height) on mobile,
+                  only getting a real height at `md:` (the desktop phone-frame
+                  preview). That meant the inner `overflow-y-auto` div below never
+                  actually had overflowing content on mobile — its height just grew
+                  to match content — so the real scrolling happened on the document
+                  itself instead. `position: sticky` computes against the nearest
+                  ancestor that has non-visible overflow, which was still this
+                  now-inert inner div; since IT never scrolled, iOS Safari never
+                  triggered "stuck" repositioning, so the header/bottom-nav weren't
+                  sticky in the iOS simulator (only appeared to work when a wide
+                  desktop window happened to hit `md:`). Fixed by giving the shell a
+                  real `h-dvh` height on every viewport size, so the inner div is
+                  always the one genuine scroll container — everywhere, not just
+                  at `md:`. */}
+              <div className="h-dvh overflow-hidden bg-slate-200 md:flex md:items-center md:justify-center md:py-6">
+                <div className="relative mx-auto h-full w-full max-w-[430px] overflow-hidden bg-white md:aspect-[430/900] md:h-[min(900px,calc(100dvh_-_3rem))] md:w-auto md:rounded-[2.5rem] md:border-[10px] md:border-slate-900 md:shadow-2xl md:[transform:translateZ(0)]">
                   <div className="relative h-full overflow-y-auto">
                     <Outlet />
                   </div>
