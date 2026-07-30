@@ -22,7 +22,7 @@ export function IntegratedSearchBar() {
     <button
       type="button"
       onClick={open}
-      className="flex w-full items-center gap-2 rounded-md bg-white px-2 py-2 text-left shadow-[0_1px_2px_rgba(0,0,0,0.06)]"
+      className="flex w-full items-center gap-2 rounded-md bg-white px-2 py-2 text-left shadow-[0_1px_2px_rgba(0,0,0,0.06)] active:scale-[0.99]"
     >
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-slate-500 text-white">
         <Plus className="h-4 w-4" />
@@ -173,7 +173,7 @@ export function MpBottomNav() {
     { key: "mijn", icon: CircleUser, label: "Mijn Marktplaats", small: true },
   ];
   return (
-    <nav className="border-t border-border bg-white shadow-[0_-6px_18px_rgba(0,0,0,0.06)]">
+    <nav className="border-t border-border bg-white pb-[env(safe-area-inset-bottom)] shadow-[0_-6px_18px_rgba(0,0,0,0.06)]">
       <ul className="grid grid-cols-5">
         {items.map((it) => {
           if (it.key === "meldingen" && NAV_MODE === "assistant") {
@@ -213,7 +213,10 @@ export function MpBottomNav() {
           return (
             <li key={it.key} className="flex flex-col items-center justify-center py-2">
               {it.to ? (
-                <Link to={it.to} className="flex flex-col items-center justify-center">
+                <Link
+                  to={it.to}
+                  className="flex flex-col items-center justify-center active:scale-95"
+                >
                   {content}
                 </Link>
               ) : (

@@ -241,7 +241,7 @@ export function ChatWindow() {
                 <button
                   onClick={close}
                   aria-label="Chat inklappen"
-                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted active:scale-95"
                 >
                   <ChevronDown className="h-5 w-5" />
                 </button>
@@ -261,14 +261,14 @@ export function ChatWindow() {
                 <button
                   onClick={() => setPanel("history")}
                   aria-label="Chatgeschiedenis"
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted active:scale-95"
                 >
                   <History className="h-[18px] w-[18px]" />
                 </button>
                 <button
                   onClick={() => setPanel("settings")}
                   aria-label="Instellingen"
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:bg-muted active:scale-95"
                 >
                   <MoreVertical className="h-[18px] w-[18px]" />
                 </button>
@@ -310,7 +310,7 @@ function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
       <button
         onClick={onBack}
         aria-label="Terug naar chat"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-muted active:scale-95"
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
@@ -401,7 +401,7 @@ function SettingsPanel({ onBack, onOpenHistory }: { onBack: () => void; onOpenHi
             key={item.label}
             type="button"
             onClick={item.onClick}
-            className="flex w-full items-center gap-3 border-b px-4 py-3.5 text-left last:border-b-0"
+            className="flex w-full items-center gap-3 border-b px-4 py-3.5 text-left last:border-b-0 active:bg-muted"
           >
             <item.icon className="h-[18px] w-[18px] text-muted-foreground" />
             <span className="flex-1 text-[14px] font-medium text-foreground">{item.label}</span>
@@ -694,7 +694,7 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
 
 function Composer() {
   return (
-    <div className="border-t bg-white px-3 pb-4 pt-3">
+    <div className="border-t bg-white px-3 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-3">
       <form
         onSubmit={(e) => e.preventDefault()}
         className="flex items-end gap-2 rounded-2xl border border-border bg-white px-2 py-2 shadow-sm focus-within:border-[#f5b48a]"

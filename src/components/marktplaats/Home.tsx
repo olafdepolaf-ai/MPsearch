@@ -222,11 +222,13 @@ function ListingCard(f: (typeof featured)[number]) {
           {f.title}
         </p>
         <p className="mt-1 font-serif text-[18px] leading-[24px] font-normal text-foreground">{f.price}</p>
-        <p className="mt-0.5 text-[12px] leading-[16px] text-muted-foreground">{f.loc}</p>
+        <p className="mt-0.5 text-[12px] leading-[16px] text-muted-foreground">
+          {f.loc} · Vandaag geplaatst
+        </p>
       </div>
     </>
   );
-  const cls = "group block overflow-hidden rounded-md border border-border bg-white";
+  const cls = "group block overflow-hidden rounded-2xl border border-border bg-white shadow-sm active:scale-[0.98]";
   return f.id ? (
     <Link to="/item/$id" params={{ id: f.id }} className={cls}>
       {inner}
@@ -238,7 +240,7 @@ function ListingCard(f: (typeof featured)[number]) {
 
 export function MpHome() {
   const [categoriesOpen, setCategoriesOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"voor-jou" | "mijn">("voor-jou");
+  const [activeTab, setActiveTab] = useState<"voor-jou" | "buurt" | "mijn">("voor-jou");
   const { mode } = useDemoMode();
   const { reset } = useChat();
 
@@ -277,7 +279,7 @@ export function MpHome() {
                 <button
                   type="button"
                   onClick={() => isAll && setCategoriesOpen((v) => !v)}
-                  className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-[12px] leading-[16px] font-medium transition ${
+                  className={`inline-flex items-center gap-1 whitespace-nowrap rounded-full border border-border px-3 py-1.5 text-[12px] leading-[16px] font-medium transition active:scale-95 ${
                     categoriesOpen && isAll
                       ? "bg-primary text-primary-foreground"
                       : "bg-white text-foreground hover:bg-muted"
@@ -303,7 +305,7 @@ export function MpHome() {
                 <button
                   key={cat}
                   type="button"
-                  className="whitespace-nowrap rounded-full border border-border bg-white px-3 py-1.5 text-[12px] leading-[16px] font-medium text-foreground hover:bg-muted"
+                  className="whitespace-nowrap rounded-full border border-border bg-white px-3 py-1.5 text-[12px] leading-[16px] font-medium text-foreground hover:bg-muted active:scale-95"
                 >
                   {cat}
                 </button>
@@ -351,7 +353,7 @@ export function MpHome() {
             href="https://www.marktplaats.nl/m/veiligheidscentrum/"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative block overflow-hidden rounded-2xl"
+            className="relative block overflow-hidden rounded-2xl active:opacity-90"
           >
             <img
               src={bannerCouple}
@@ -389,8 +391,16 @@ export function MpHome() {
                 <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
               )}
             </button>
-            <button className="shrink-0 whitespace-nowrap px-4 py-2 text-[14px] leading-[18px] font-medium text-muted-foreground">
+            <button
+              onClick={() => setActiveTab("buurt")}
+              className={`relative shrink-0 whitespace-nowrap px-4 py-2 text-[14px] leading-[18px] font-medium ${
+                activeTab === "buurt" ? "text-primary" : "text-muted-foreground"
+              }`}
+            >
               In je buurt
+              {activeTab === "buurt" && (
+                <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
+              )}
             </button>
             <button
               onClick={() => setActiveTab("mijn")}
@@ -406,7 +416,7 @@ export function MpHome() {
           </div>
 
           <div className="grid grid-cols-2 gap-3">
-            {(activeTab === "voor-jou" ? featured : myAds).map((f) => (
+            {(activeTab === "mijn" ? myAds : featured).map((f) => (
               <ListingCard key={f.title} {...f} />
             ))}
           </div>
