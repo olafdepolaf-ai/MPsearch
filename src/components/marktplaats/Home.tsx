@@ -377,10 +377,10 @@ export function MpHome() {
 
         {/* Voor jou / In je buurt / Mijn advertenties tabs */}
         <section className="px-3 pt-4">
-          <div className="mb-3 flex border-b border-border">
+          <div className="no-scrollbar mb-3 flex overflow-x-auto border-b border-border">
             <button
               onClick={() => setActiveTab("voor-jou")}
-              className={`relative px-4 py-2 text-[14px] leading-[18px] font-medium ${
+              className={`relative shrink-0 whitespace-nowrap px-4 py-2 text-[14px] leading-[18px] font-medium ${
                 activeTab === "voor-jou" ? "text-primary" : "text-muted-foreground"
               }`}
             >
@@ -389,12 +389,12 @@ export function MpHome() {
                 <span className="absolute inset-x-3 -bottom-px h-0.5 bg-primary" />
               )}
             </button>
-            <button className="px-4 py-2 text-[14px] leading-[18px] font-medium text-muted-foreground">
+            <button className="shrink-0 whitespace-nowrap px-4 py-2 text-[14px] leading-[18px] font-medium text-muted-foreground">
               In je buurt
             </button>
             <button
               onClick={() => setActiveTab("mijn")}
-              className={`relative px-4 py-2 text-[14px] leading-[18px] font-medium ${
+              className={`relative shrink-0 whitespace-nowrap px-4 py-2 text-[14px] leading-[18px] font-medium ${
                 activeTab === "mijn" ? "text-primary" : "text-muted-foreground"
               }`}
             >
