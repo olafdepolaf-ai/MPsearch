@@ -69,11 +69,11 @@ const discoveryTiles: Array<{
 }> = [
   {
     title: "Onlangs bekeken",
-    img: tileLadekast,
+    img: tileTent,
   },
   {
     title: "Recente favorieten",
-    img: tileTent,
+    img: "https://images.marktplaats.com/api/v1/hz-mp-pro-listing/images/8bbab6c3-b75c-41da-be0a-ffa84f25a619?rule=ecg_mp_eps$_85",
   },
   {
     title: "Nieuwe auto",
