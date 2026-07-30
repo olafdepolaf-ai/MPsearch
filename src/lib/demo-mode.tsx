@@ -50,12 +50,15 @@ export function useDemoMode() {
 /**
  * Floating dropdown to switch demos. Positioned fixed at the top-left of the
  * viewport — outside the phone-frame mockup — so it never takes up space on
- * the app's own screen.
+ * the app's own screen. That only holds at the `md:` breakpoint where the
+ * phone-frame mockup has a gray margin around it; below that, the frame
+ * fills the whole viewport and this would sit on top of real header
+ * controls (e.g. the AI-search hamburger), so it's desktop-only.
  */
 export function DemoModeSwitcher() {
   const { mode, setMode } = useDemoMode();
   return (
-    <div className="fixed left-3 top-3 z-50">
+    <div className="fixed left-3 top-3 z-50 hidden md:block">
       <select
         value={mode}
         onChange={(e) => setMode(e.target.value as DemoMode)}
