@@ -1,29 +1,28 @@
-# Welcome to your Lovable project
+# MPsearch
 
-This project was built with [Lovable](https://lovable.dev).
+Mobile-web prototype of Marktplaats (the Dutch classifieds marketplace) with a
+scripted AI shopping-assistant overlay. Two demo variants are available:
 
-## Build with Lovable
+- `/demo-1` — search bar + assistant reachable via the menu/bottom nav
+- `/demo-2` — an integrated AI-search bar replaces the header search
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+## Stack
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+TanStack Start (file-based SSR router) + TanStack React Query + React 19 +
+Tailwind v4 + shadcn/ui.
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Package manager is [bun](https://bun.sh).
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+bun install
+bun run dev       # starts the app at http://localhost:8080
+bun run build     # production build
+bun run preview   # preview a production build
+bun run lint      # eslint .
+bun run format    # prettier --write .
 ```
 
-## Built with
-
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+See `CLAUDE.md` for an architecture overview (routing conventions, SSR error
+handling, the chat assistant's scripted state machine).

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-A mobile-web prototype of Marktplaats (Dutch classifieds marketplace) with a scripted AI shopping-assistant chat overlay. This is a **Lovable** project (see `AGENTS.md`) — it syncs bidirectionally with the Lovable editor via git, so avoid rewriting published history (no force-push, no rebase/amend/squash of pushed commits).
+A mobile-web prototype of Marktplaats (Dutch classifieds marketplace) with a scripted AI shopping-assistant chat overlay. The repo syncs bidirectionally with the Lovable editor via git, so avoid rewriting published history (no force-push, no rebase/amend/squash of pushed commits).
 
 ## Commands
 
@@ -33,7 +33,8 @@ There is no test runner configured in `package.json`.
 **Routing** (`src/routes/`): file-based via TanStack Router, generating `src/routeTree.gen.ts` (auto-generated, never edit by hand). Conventions are documented in `src/routes/README.md` — notably: no `src/pages/`, no Next/Remix-style `app/` directory; dynamic segments are bare `$id` (not `{id}`); `__root.tsx` is the only root layout and must preserve `<Outlet />`. Server-only API routes live under `src/routes/api/**` and export a `server.handlers` object (see `src/routes/api/public/suggestions.ts`, which proxies Marktplaats' real search-suggestions endpoint).
 
 **SSR error handling is layered and load-bearing** — don't simplify without understanding why:
-- `src/start.ts` defines `startInstance` with a server-side `errorMiddleware` (catches thrown errors, renders `renderErrorPage()`) plus a CSRF middleware for server functions. TanStack Start only auto-installs CSRF protection when `src/start.ts` is *absent*; defining this file requires re-adding `createCsrfMiddleware` explicitly.
+
+- `src/start.ts` defines `startInstance` with a server-side `errorMiddleware` (catches thrown errors, renders `renderErrorPage()`) plus a CSRF middleware for server functions. TanStack Start only auto-installs CSRF protection when `src/start.ts` is _absent_; defining this file requires re-adding `createCsrfMiddleware` explicitly.
 - `src/server.ts` wraps the generated SSR entry (`@tanstack/react-start/server-entry`) and additionally detects the case where h3 (Nitro's HTTP layer) swallows an in-handler throw into a generic `{"unhandled":true,"message":"HTTPError"}` 500 JSON body — a try/catch around the handler call does not catch this, so it's detected by inspecting the response body instead.
 - `src/lib/error-capture.ts` monkey-patches `console.error` to expand `Error`-like args (message + stack + full `cause` chain) before they hit the log pipeline, and records the last real error out-of-band (5s TTL) so `server.ts` can recover error detail that h3 already stripped.
 - `src/lib/lovable-error-reporting.ts` and `src/routes/__root.tsx`'s `ErrorComponent` report client-side render errors back to Lovable.

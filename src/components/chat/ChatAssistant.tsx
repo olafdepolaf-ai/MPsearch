@@ -25,11 +25,24 @@ import type { ChatMessage } from "@/lib/chat-store";
 function TypingBubble() {
   return (
     <div className="flex items-end gap-2 animate-fade-in">
-      <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
+      <img
+        src={assistantImg}
+        alt=""
+        className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5"
+      />
       <div className="flex items-center gap-1 rounded-2xl rounded-bl-sm bg-muted px-3.5 py-3">
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-typing-dot" style={{ animationDelay: "0ms" }} />
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-typing-dot" style={{ animationDelay: "150ms" }} />
-        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-typing-dot" style={{ animationDelay: "300ms" }} />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-typing-dot"
+          style={{ animationDelay: "0ms" }}
+        />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-typing-dot"
+          style={{ animationDelay: "150ms" }}
+        />
+        <span
+          className="h-1.5 w-1.5 rounded-full bg-muted-foreground/60 animate-typing-dot"
+          style={{ animationDelay: "300ms" }}
+        />
       </div>
     </div>
   );
@@ -48,7 +61,10 @@ function useMessageReveal(messages: ChatMessage[], revealFrom: number) {
 
   // Snap when a new interaction sets a fresh revealFrom, or messages were reset/shrunk.
   useEffect(() => {
-    if (revealFrom !== prevRevealFromRef.current || messages.length < prevRevealFromRef.current) {
+    if (
+      revealFrom !== prevRevealFromRef.current ||
+      messages.length < prevRevealFromRef.current
+    ) {
       setCount(Math.min(revealFrom, messages.length));
       setTyping(false);
     }
@@ -76,13 +92,14 @@ function useMessageReveal(messages: ChatMessage[], revealFrom: number) {
     return () => clearTimeout(t);
   }, [count, typing, messages]);
 
-  return { visible: messages.slice(0, count), typing: typing && count < messages.length };
+  return {
+    visible: messages.slice(0, count),
+    typing: typing && count < messages.length,
+  };
 }
 
 const KOELBOX_60_IMG =
   "https://admarkt-cdn.marktplaats.com/api/v1/icas-mp-pro-admarkt/images/10/10fdd7db-4e06-46e1-a100-36558ef94c19?rule=eps_85";
-
-
 
 const koelkastProducts = [
   {
@@ -152,7 +169,6 @@ const racefietsProducts = [
   },
 ];
 
-
 export function AssistantFab() {
   const { view, open } = useChat();
   // In "assistant"-nav mode zit de trigger in de bottom-nav; verberg de zwevende FAB.
@@ -169,11 +185,12 @@ export function AssistantFab() {
         strokeWidth={2.5}
         fill="currentColor"
       />
-      <span className="font-serif text-[26px] leading-none font-bold text-white">M</span>
+      <span className="font-serif text-[26px] leading-none font-bold text-white">
+        M
+      </span>
     </button>
   );
 }
-
 
 export function ChatWindow() {
   const {
@@ -189,7 +206,8 @@ export function ChatWindow() {
     chooseDestinationKoelkast,
   } = useChat();
   const navigate = useNavigate();
-  const onPickProduct = (id: string) => navigate({ to: "/item/$id", params: { id } });
+  const onPickProduct = (id: string) =>
+    navigate({ to: "/item/$id", params: { id } });
 
   const [panel, setPanel] = useState<"none" | "history" | "settings">("none");
   // Reopening the assistant (or dropping to peek) always starts back at the
@@ -215,7 +233,6 @@ export function ChatWindow() {
         className={`animate-sheet-up absolute inset-x-0 bottom-0 z-50 flex flex-col overflow-hidden rounded-t-3xl border-t bg-white shadow-2xl ${
           isPeek ? "h-[120px]" : "h-[85%]"
         }`}
-
       >
         {isPeek ? (
           <>
@@ -232,7 +249,10 @@ export function ChatWindow() {
         ) : panel === "history" ? (
           <ChatHistoryPanel onBack={() => setPanel("none")} />
         ) : panel === "settings" ? (
-          <SettingsPanel onBack={() => setPanel("none")} onOpenHistory={() => setPanel("history")} />
+          <SettingsPanel
+            onBack={() => setPanel("none")}
+            onOpenHistory={() => setPanel("history")}
+          />
         ) : (
           <>
             {/* Header: collapse on the left, assistant identity + history/settings on the right */}
@@ -252,9 +272,13 @@ export function ChatWindow() {
                       fill="currentColor"
                       strokeWidth={2.5}
                     />
-                    <span className="font-serif text-[12px] leading-none font-bold text-white">M</span>
+                    <span className="font-serif text-[12px] leading-none font-bold text-white">
+                      M
+                    </span>
                   </div>
-                  <span className="text-[14px] font-semibold text-foreground">Marktplaats Assistent</span>
+                  <span className="text-[14px] font-semibold text-foreground">
+                    Marktplaats Assistent
+                  </span>
                 </div>
               </div>
               <div className="flex items-center gap-0.5">
@@ -297,7 +321,6 @@ export function ChatWindow() {
             <Composer />
           </>
         )}
-
       </div>
     </>
   );
@@ -314,7 +337,9 @@ function PanelHeader({ title, onBack }: { title: string; onBack: () => void }) {
       >
         <ChevronLeft className="h-5 w-5" />
       </button>
-      <span className="flex-1 pr-8 text-center text-[15px] font-semibold text-foreground">{title}</span>
+      <span className="flex-1 pr-8 text-center text-[15px] font-semibold text-foreground">
+        {title}
+      </span>
     </div>
   );
 }
@@ -354,7 +379,10 @@ function ChatHistoryPanel({ onBack }: { onBack: () => void }) {
       <div className="flex-1 overflow-y-auto px-4 py-4">
         <p className="text-[13px] leading-[18px] text-muted-foreground">
           Om je chats te beheren, bezoek de Marktplaats{" "}
-          <button type="button" className="font-medium text-primary hover:underline">
+          <button
+            type="button"
+            className="font-medium text-primary hover:underline"
+          >
             Chathistorie
           </button>
           .
@@ -363,10 +391,16 @@ function ChatHistoryPanel({ onBack }: { onBack: () => void }) {
         <div className="mt-5 space-y-5">
           {chatHistoryGroups.map((group) => (
             <div key={group.date}>
-              <p className="mb-2 text-[12px] font-medium text-muted-foreground">{group.date}</p>
+              <p className="mb-2 text-[12px] font-medium text-muted-foreground">
+                {group.date}
+              </p>
               <div className="space-y-3 pl-2">
                 {group.chats.map((c) => (
-                  <button key={c.title} type="button" className="block w-full text-left">
+                  <button
+                    key={c.title}
+                    type="button"
+                    className="block w-full text-left"
+                  >
                     <p className="text-[14px] text-foreground">{c.title}</p>
                     <p className="mt-0.5 text-[12px] text-muted-foreground">
                       {group.date} · {c.platform}
@@ -386,12 +420,19 @@ function ChatHistoryPanel({ onBack }: { onBack: () => void }) {
   );
 }
 
-function SettingsPanel({ onBack, onOpenHistory }: { onBack: () => void; onOpenHistory: () => void }) {
-  const items: { icon: typeof History; label: string; onClick?: () => void }[] = [
-    { icon: History, label: "Chatgeschiedenis", onClick: onOpenHistory },
-    { icon: ExternalLink, label: "Aan de slag" },
-    { icon: Pencil, label: "Beheer opgeslagen zoekopdrachten" },
-  ];
+function SettingsPanel({
+  onBack,
+  onOpenHistory,
+}: {
+  onBack: () => void;
+  onOpenHistory: () => void;
+}) {
+  const items: { icon: typeof History; label: string; onClick?: () => void }[] =
+    [
+      { icon: History, label: "Chatgeschiedenis", onClick: onOpenHistory },
+      { icon: ExternalLink, label: "Aan de slag" },
+      { icon: Pencil, label: "Beheer opgeslagen zoekopdrachten" },
+    ];
   return (
     <div className="animate-slide-in-right flex flex-1 flex-col overflow-hidden">
       <PanelHeader title="Instellingen" onBack={onBack} />
@@ -404,7 +445,9 @@ function SettingsPanel({ onBack, onOpenHistory }: { onBack: () => void; onOpenHi
             className="flex w-full items-center gap-3 border-b px-4 py-3.5 text-left last:border-b-0 active:bg-muted"
           >
             <item.icon className="h-[18px] w-[18px] text-muted-foreground" />
-            <span className="flex-1 text-[14px] font-medium text-foreground">{item.label}</span>
+            <span className="flex-1 text-[14px] font-medium text-foreground">
+              {item.label}
+            </span>
             <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground" />
           </button>
         ))}
@@ -439,7 +482,9 @@ function MessageStream({
   useEffect(() => {
     const isNewInteraction = revealFrom !== prevRevealFromRef.current;
     prevRevealFromRef.current = revealFrom;
-    const anchorId = isNewInteraction ? messages[revealFrom - 1]?.id : visible.at(-1)?.id;
+    const anchorId = isNewInteraction
+      ? messages[revealFrom - 1]?.id
+      : visible.at(-1)?.id;
     const el = anchorId ? itemRefs.current.get(anchorId) : undefined;
     el?.scrollIntoView({
       block: isNewInteraction ? "start" : "nearest",
@@ -460,7 +505,11 @@ function MessageStream({
         >
           {m.role === "assistant" ? (
             <div className="flex items-end gap-2">
-              <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
+              <img
+                src={assistantImg}
+                alt=""
+                className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5"
+              />
               <div className="max-w-[78%] whitespace-pre-line rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2.5 text-sm text-foreground">
                 {m.text}
               </div>
@@ -472,16 +521,29 @@ function MessageStream({
               </div>
             </div>
           )}
-          {m.cards === "koelkasten" && <ProductSwiper products={koelkastProducts} onPick={onPickProduct} />}
-          {m.cards === "plug" && <ProductSwiper products={plugProducts} onPick={() => {}} />}
+          {m.cards === "koelkasten" && (
+            <ProductSwiper products={koelkastProducts} onPick={onPickProduct} />
+          )}
+          {m.cards === "plug" && (
+            <ProductSwiper products={plugProducts} onPick={() => {}} />
+          )}
           {m.cards === "koelbox-20-alt" && (
-            <ProductSwiper products={koelbox20AltProducts} onPick={onPickProduct} />
+            <ProductSwiper
+              products={koelbox20AltProducts}
+              onPick={onPickProduct}
+            />
           )}
           {m.cards === "racefietsen" && (
-            <ProductSwiper products={racefietsProducts} onPick={onPickProduct} />
+            <ProductSwiper
+              products={racefietsProducts}
+              onPick={onPickProduct}
+            />
           )}
           {m.cards === "koelkast-destination-choice" && (
-            <DestinationChoice onMarktplaats={onChooseMarktplaats} onDestination={onChooseDestination} />
+            <DestinationChoice
+              onMarktplaats={onChooseMarktplaats}
+              onDestination={onChooseDestination}
+            />
           )}
         </div>
       ))}
@@ -489,16 +551,36 @@ function MessageStream({
       {typing && <TypingBubble />}
 
       {done && flow === "koelkast-results" && (
-        <QuickReplies replies={["Iets goedkopers?", "Hoe groot is 25L?", "Werkt op zonnepaneel?"]} />
+        <QuickReplies
+          replies={[
+            "Iets goedkopers?",
+            "Hoe groot is 25L?",
+            "Werkt op zonnepaneel?",
+          ]}
+        />
       )}
       {done && flow === "racefiets-results" && (
-        <QuickReplies replies={["Zit er een slot bij?", "Kan ik gepast passen?", "Nog een optie?"]} />
+        <QuickReplies
+          replies={[
+            "Zit er een slot bij?",
+            "Kan ik gepast passen?",
+            "Nog een optie?",
+          ]}
+        />
       )}
       {done && flow === "plug-answer" && (
-        <QuickReplies replies={["Bedankt!", "En in Kroatië?", "Verzendkosten?"]} />
+        <QuickReplies
+          replies={["Bedankt!", "En in Kroatië?", "Verzendkosten?"]}
+        />
       )}
       {done && flow === "koelbox-60-answer" && (
-        <QuickReplies replies={["Toon meer alternatieven", "Werkt deze op campinggas?", "Verloopstekker nodig?"]} />
+        <QuickReplies
+          replies={[
+            "Toon meer alternatieven",
+            "Werkt deze op campinggas?",
+            "Verloopstekker nodig?",
+          ]}
+        />
       )}
     </>
   );
@@ -538,7 +620,11 @@ function Koelbox60Intro({ onAskKofferbak }: { onAskKofferbak: () => void }) {
   return (
     <div className="space-y-5">
       <div className="flex items-end gap-2">
-        <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
+        <img
+          src={assistantImg}
+          alt=""
+          className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5"
+        />
         <div className="max-w-[78%] rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2.5 text-sm text-foreground">
           Vragen over deze koelbox? Kies een onderwerp of typ je vraag.
         </div>
@@ -559,7 +645,6 @@ function Koelbox60Intro({ onAskKofferbak }: { onAskKofferbak: () => void }) {
     </div>
   );
 }
-
 
 function PeekProductPrompt({ onAsk }: { onAsk: () => void }) {
   return (
@@ -622,13 +707,20 @@ function ProductSwiper({
           className="w-[62%] shrink-0 overflow-hidden rounded-2xl border bg-card shadow-sm active:scale-[0.98]"
         >
           <div className="relative aspect-[4/3] bg-muted">
-            <img src={p.img} alt={p.title} className="h-full w-full object-cover" loading="lazy" />
+            <img
+              src={p.img}
+              alt={p.title}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
             <span className="absolute left-2 top-2 rounded-full bg-assistant px-2 py-0.5 text-[10px] font-semibold text-white">
               {p.tag}
             </span>
           </div>
           <div className="p-2.5">
-            <p className="line-clamp-2 text-xs font-medium text-foreground">{p.title}</p>
+            <p className="line-clamp-2 text-xs font-medium text-foreground">
+              {p.title}
+            </p>
             <p className="mt-1 text-sm font-bold text-foreground">{p.price}</p>
             <p className="mt-0.5 text-[10px] text-muted-foreground">{p.loc}</p>
           </div>
@@ -653,9 +745,14 @@ function IntroHome({ onPick }: { onPick: (label: string) => void }) {
     <div className="space-y-4">
       {/* Greeting */}
       <div className="flex items-end gap-2">
-        <img src={assistantImg} alt="" className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5" />
+        <img
+          src={assistantImg}
+          alt=""
+          className="h-7 w-7 shrink-0 rounded-full bg-assistant/10 p-0.5"
+        />
         <div className="max-w-[78%] whitespace-pre-line rounded-2xl rounded-bl-sm bg-muted px-3.5 py-2.5 text-sm text-foreground">
-          Hoi Stefano, je kampeeruitrusting is bijna compleet.{"\n"}Waar kan ik mee helpen?
+          Hoi Stefano, je kampeeruitrusting is bijna compleet.{"\n"}Waar kan ik
+          mee helpen?
         </div>
       </div>
 
@@ -729,4 +826,3 @@ function Composer() {
     </div>
   );
 }
-

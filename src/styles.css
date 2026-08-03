@@ -11,7 +11,8 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
-  --font-sans: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  --font-sans:
+    "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
   --font-serif: "Bree Serif", Georgia, serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -75,79 +76,170 @@
   * {
     border-color: var(--color-border);
   }
-  html, body {
+  html,
+  body {
     background-color: oklch(0.97 0.005 260);
     color: var(--color-foreground);
-    font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    font-family:
+      "Roboto",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      Arial,
+      sans-serif;
     font-size: 14px;
     line-height: 18px;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: "Bree Serif", Georgia, serif;
     font-weight: 400;
     font-size: 18px;
     line-height: 24px;
     color: var(--color-foreground);
   }
-  button, input, select, textarea {
+  button,
+  input,
+  select,
+  textarea {
     font-family: inherit;
   }
 }
 
 @keyframes slide-up-sheet {
-  from { transform: translateY(100%); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes bubble-drift {
-  0% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-  100% { transform: translateY(0); }
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
-  70% { box-shadow: 0 0 0 14px rgba(99, 102, 241, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 14px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
 }
 @keyframes typing-dot {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
-  30% { transform: translateY(-3px); opacity: 1; }
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-3px);
+    opacity: 1;
+  }
 }
 @keyframes slide-in-right {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes slide-in-left {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 /* Puur Marktplaats pill: a bright spot laps the edge in ~3s, then idles for
    the rest of a 15s cycle before repeating. */
 @keyframes puur-orbit {
-  0% { transform: rotate(0deg); opacity: 0; }
-  3% { opacity: 1; }
-  20% { transform: rotate(360deg); opacity: 1; }
-  24% { transform: rotate(360deg); opacity: 0; }
-  100% { transform: rotate(360deg); opacity: 0; }
+  0% {
+    transform: rotate(0deg);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  20% {
+    transform: rotate(360deg);
+    opacity: 1;
+  }
+  24% {
+    transform: rotate(360deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 0;
+  }
 }
 @keyframes puur-shimmer {
-  0% { transform: translateX(-120%) skewX(-20deg); opacity: 0; }
-  5% { opacity: 0.6; }
-  20% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
-  100% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+  0% {
+    transform: translateX(-120%) skewX(-20deg);
+    opacity: 0;
+  }
+  5% {
+    opacity: 0.6;
+  }
+  20% {
+    transform: translateX(220%) skewX(-20deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(220%) skewX(-20deg);
+    opacity: 0;
+  }
 }
 
-.animate-sheet-up { animation: slide-up-sheet 320ms cubic-bezier(0.22, 1, 0.36, 1); }
-.animate-fade-in { animation: fade-in 300ms ease-out; }
-.animate-bubble-drift { animation: bubble-drift 3s ease-in-out infinite; }
-.animate-pulse-ring { animation: pulse-ring 2.4s ease-out infinite; }
-.animate-typing-dot { animation: typing-dot 1s ease-in-out infinite; display: inline-block; }
-.animate-slide-in-right { animation: slide-in-right 280ms cubic-bezier(0.22, 1, 0.36, 1); }
-.animate-slide-in-left { animation: slide-in-left 280ms cubic-bezier(0.22, 1, 0.36, 1); }
+.animate-sheet-up {
+  animation: slide-up-sheet 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-fade-in {
+  animation: fade-in 300ms ease-out;
+}
+.animate-bubble-drift {
+  animation: bubble-drift 3s ease-in-out infinite;
+}
+.animate-pulse-ring {
+  animation: pulse-ring 2.4s ease-out infinite;
+}
+.animate-typing-dot {
+  animation: typing-dot 1s ease-in-out infinite;
+  display: inline-block;
+}
+.animate-slide-in-right {
+  animation: slide-in-right 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-slide-in-left {
+  animation: slide-in-left 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
 
 .puur-glow-ring {
   background: conic-gradient(
@@ -163,10 +255,19 @@
   filter: blur(0.5px);
 }
 .puur-glow-shimmer {
-  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
+  background: linear-gradient(
+    115deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 60%
+  );
   animation: puur-shimmer 15s ease-in-out infinite;
 }
 
 /* hide scrollbars on horizontal swipers */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}

@@ -124,7 +124,9 @@ export function MpHeader() {
   return (
     <header className="sticky top-0 z-30 bg-[#f5b48a]">
       <div ref={wrapRef} className="relative px-3 py-3">
-        <div className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-between" : ""}`}>
+        <div
+          className={`flex items-center gap-2 ${mode === "integrated-search" ? "justify-between" : ""}`}
+        >
           <div className="flex min-w-0 shrink-0 items-center gap-2">
             {!accountMenuOpen && (
               <button
@@ -236,7 +238,10 @@ export function MpBottomNav() {
         {items.map((it) => {
           if (it.key === "meldingen" && NAV_MODE === "assistant") {
             return (
-              <li key="assistant" className="flex items-center justify-center py-1.5">
+              <li
+                key="assistant"
+                className="flex items-center justify-center py-1.5"
+              >
                 <button
                   type="button"
                   onClick={open}
@@ -248,7 +253,9 @@ export function MpBottomNav() {
                     strokeWidth={2.5}
                     fill="currentColor"
                   />
-                  <span className="font-serif text-[20px] leading-none font-bold">M</span>
+                  <span className="font-serif text-[20px] leading-none font-bold">
+                    M
+                  </span>
                 </button>
               </li>
             );
@@ -269,7 +276,10 @@ export function MpBottomNav() {
             </>
           );
           return (
-            <li key={it.key} className="flex flex-col items-center justify-center py-2">
+            <li
+              key={it.key}
+              className="flex flex-col items-center justify-center py-2"
+            >
               {it.to ? (
                 <Link
                   to={it.to}
@@ -307,7 +317,10 @@ export function AccountMenuDrawer() {
   if (!open) return null;
   return (
     <>
-      <div className="animate-fade-in absolute inset-0 z-40 bg-black/30" onClick={close} />
+      <div
+        className="animate-fade-in absolute inset-0 z-40 bg-black/30"
+        onClick={close}
+      />
       <div className="animate-slide-in-left absolute inset-y-0 left-0 z-50 flex w-[78%] max-w-[300px] flex-col bg-white shadow-2xl">
         <div className="flex items-center px-3 py-3">
           <button
@@ -324,8 +337,12 @@ export function AccountMenuDrawer() {
             S
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground">Stefano</p>
-            <p className="text-[12px] text-muted-foreground">Mijn Marktplaats</p>
+            <p className="truncate text-sm font-semibold text-foreground">
+              Stefano
+            </p>
+            <p className="text-[12px] text-muted-foreground">
+              Mijn Marktplaats
+            </p>
           </div>
         </div>
         <nav className="min-h-0 flex-1 overflow-y-auto py-2">
@@ -336,7 +353,9 @@ export function AccountMenuDrawer() {
               className="flex w-full items-center gap-3 px-4 py-3 text-left active:bg-muted"
             >
               <item.icon className="h-[18px] w-[18px] shrink-0 text-muted-foreground" />
-              <span className="text-[14px] font-medium text-foreground">{item.label}</span>
+              <span className="text-[14px] font-medium text-foreground">
+                {item.label}
+              </span>
             </button>
           ))}
         </nav>

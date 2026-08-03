@@ -11,7 +11,9 @@ export const Route = createFileRoute("/api/public/suggestions")({
             headers: { "content-type": "application/json" },
           });
         }
-        const upstream = new URL("https://www.marktplaats.nl/header/searches/suggestions");
+        const upstream = new URL(
+          "https://www.marktplaats.nl/header/searches/suggestions",
+        );
         upstream.searchParams.set("prefix", prefix);
         upstream.searchParams.set("category", "0");
         try {

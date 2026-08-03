@@ -1,10 +1,21 @@
-import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 export type ChatMessage = {
   id: string;
   role: "user" | "assistant";
   text: string;
-  cards?: "koelkasten" | "plug" | "koelbox-20-alt" | "racefietsen" | "koelkast-destination-choice";
+  cards?:
+    | "koelkasten"
+    | "plug"
+    | "koelbox-20-alt"
+    | "racefietsen"
+    | "koelkast-destination-choice";
 };
 
 export type ChatView = "closed" | "peek" | "open";
@@ -56,7 +67,10 @@ const introEntry = (): EntryState => ({
   ],
 });
 
-const koelbox60Entry = (): EntryState => ({ flow: "on-koelbox-60", messages: [] });
+const koelbox60Entry = (): EntryState => ({
+  flow: "on-koelbox-60",
+  messages: [],
+});
 
 const productEntry = (productTitle: string): EntryState => ({
   flow: "on-product",
@@ -73,9 +87,13 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [view, setView] = useState<ChatView>("closed");
   const [entryState, setEntryState] = useState<EntryState>(introEntry);
   const [flow, setFlow] = useState<ChatFlow>(() => entryState.flow);
-  const [messages, setMessages] = useState<ChatMessage[]>(() => entryState.messages);
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    () => entryState.messages,
+  );
   // Nothing to animate for the initial static greeting.
-  const [revealFrom, setRevealFrom] = useState(() => entryState.messages.length);
+  const [revealFrom, setRevealFrom] = useState(
+    () => entryState.messages.length,
+  );
 
   const value = useMemo<ChatCtx>(
     () => ({
@@ -128,8 +146,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
             {
               id: nextId(),
               role: "assistant",
-              text:
-                "Wil je 'm gewoon in Nederland kopen op Marktplaats, of liever op je vakantiebestemming? Ga je naar Frankrijk, Italië of Duitsland? Ik kan daar voor je zoeken en helpen met de taal via de zusterwebsites van Marktplaats.",
+              text: "Wil je 'm gewoon in Nederland kopen op Marktplaats, of liever op je vakantiebestemming? Ga je naar Frankrijk, Italië of Duitsland? Ik kan daar voor je zoeken en helpen met de taal via de zusterwebsites van Marktplaats.",
               cards: "koelkast-destination-choice",
             },
           ]);
@@ -175,8 +192,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           {
             id: nextId(),
             role: "assistant",
-            text:
-              "Zoeken bij de zusterwebsites van Marktplaats op je bestemming (zoals Leboncoin in Frankrijk, Subito in Italië of eBay Kleinanzeigen in Duitsland) werkt nog niet in deze demo — probeer 'Koop op Marktplaats' voor een voorbeeld.",
+            text: "Zoeken bij de zusterwebsites van Marktplaats op je bestemming (zoals Leboncoin in Frankrijk, Subito in Italië of eBay Kleinanzeigen in Duitsland) werkt nog niet in deze demo — probeer 'Koop op Marktplaats' voor een voorbeeld.",
           },
         ]);
       },
@@ -210,8 +226,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           {
             id: nextId(),
             role: "assistant",
-            text:
-              "Nee, deze past net niet. Hij is te groot.\n\nDe kofferbak van jouw Peugeot is ongeveer 68 cm diep. Deze 60L koelbox is 72 × 36 × 55 cm — de achterklep kan dan niet dicht. Een kleiner model past wél.",
+            text: "Nee, deze past net niet. Hij is te groot.\n\nDe kofferbak van jouw Peugeot is ongeveer 68 cm diep. Deze 60L koelbox is 72 × 36 × 55 cm — de achterklep kan dan niet dicht. Een kleiner model past wél.",
           },
           {
             id: nextId(),
@@ -227,18 +242,21 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setRevealFrom(messages.length + 1);
         setMessages((prev) => [
           ...prev,
-          { id: nextId(), role: "user", text: "Werkt deze ook in Griekenland? Of heb ik een aparte stekker nodig?" },
+          {
+            id: nextId(),
+            role: "user",
+            text: "Werkt deze ook in Griekenland? Of heb ik een aparte stekker nodig?",
+          },
           {
             id: nextId(),
             role: "assistant",
-            text:
-              "Goede vraag! Griekenland gebruikt stopcontacten van het type C en F — dezelfde als in Nederland. Deze koelkast werkt dus gewoon op het lichtnet daar. Reis je met een auto of camper? Dan is een 12V-adapter handig voor onderweg. Ik vond deze op Marktplaats:",
+            text: "Goede vraag! Griekenland gebruikt stopcontacten van het type C en F — dezelfde als in Nederland. Deze koelkast werkt dus gewoon op het lichtnet daar. Reis je met een auto of camper? Dan is een 12V-adapter handig voor onderweg. Ik vond deze op Marktplaats:",
             cards: "plug",
           },
         ]);
       },
     }),
-    [view, flow, messages, revealFrom, entryState]
+    [view, flow, messages, revealFrom, entryState],
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

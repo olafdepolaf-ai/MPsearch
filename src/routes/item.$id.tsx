@@ -1,6 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useParams } from "@tanstack/react-router";
-import { ChevronLeft, Heart, Share2, MapPin, Shield, Star, Gavel, MessagesSquare } from "lucide-react";
+import {
+  ChevronLeft,
+  Heart,
+  Share2,
+  MapPin,
+  Shield,
+  Star,
+  Gavel,
+  MessagesSquare,
+} from "lucide-react";
 import { MpBottomNav } from "@/components/marktplaats/Chrome";
 import koelkast1 from "@/assets/koelkast1.jpg";
 import koelkast2 from "@/assets/koelkast2.jpg";
@@ -9,17 +18,20 @@ import { useChat } from "@/lib/chat-store";
 const KOELBOX_60_IMG =
   "https://admarkt-cdn.marktplaats.com/api/v1/icas-mp-pro-admarkt/images/10/10fdd7db-4e06-46e1-a100-36558ef94c19?rule=eps_85";
 
-const items: Record<string, {
-  title: string;
-  price: string;
-  img: string;
-  loc: string;
-  sellerName: string;
-  rating: string;
-  reviews?: number;
-  desc: string;
-  specs: [string, string][];
-}> = {
+const items: Record<
+  string,
+  {
+    title: string;
+    price: string;
+    img: string;
+    loc: string;
+    sellerName: string;
+    rating: string;
+    reviews?: number;
+    desc: string;
+    specs: [string, string][];
+  }
+> = {
   "koelbox-60": {
     title: "Compressor koelbox elektrisch — Coolbox Frigobox 60L",
     price: "€ 219,00",
@@ -28,8 +40,7 @@ const items: Record<string, {
     sellerName: "CoolTrade",
     rating: "4.8",
     reviews: 312,
-    desc:
-      "Krachtige 60L compressor koelbox. Koelt tot -20°C, werkt op 12/24V en 230V. Ideaal voor lange kampeer- of autoreizen. Retourdeal met korting.",
+    desc: "Krachtige 60L compressor koelbox. Koelt tot -20°C, werkt op 12/24V en 230V. Ideaal voor lange kampeer- of autoreizen. Retourdeal met korting.",
     specs: [
       ["Inhoud", "60 liter"],
       ["Afmetingen", "72 × 36 × 55 cm"],
@@ -45,8 +56,7 @@ const items: Record<string, {
     sellerName: "Bram",
     rating: "4.9",
     reviews: 127,
-    desc:
-      "Compacte 20L compressor koelbox. Past ruim in de meeste kofferbakken. Werkt op 12V en 230V, koelt tot -18°C.",
+    desc: "Compacte 20L compressor koelbox. Past ruim in de meeste kofferbakken. Werkt op 12V en 230V, koelt tot -18°C.",
     specs: [
       ["Inhoud", "20 liter"],
       ["Afmetingen", "58 × 33 × 29 cm"],
@@ -62,8 +72,7 @@ const items: Record<string, {
     sellerName: "Bram",
     rating: "4.9",
     reviews: 127,
-    desc:
-      "Zo goed als nieuwe compressor koelkast, ideaal voor caravan, camper of boot. Koelt tot -18°C. Werkt op 12V (auto) én 230V (stopcontact). Zuinig en stil.",
+    desc: "Zo goed als nieuwe compressor koelkast, ideaal voor caravan, camper of boot. Koelt tot -18°C. Werkt op 12V (auto) én 230V (stopcontact). Zuinig en stil.",
     specs: [
       ["Inhoud", "25 liter"],
       ["Voeding", "12V DC / 230V AC"],
@@ -79,8 +88,7 @@ const items: Record<string, {
     sellerName: "Sanne",
     rating: "4.7",
     reviews: 58,
-    desc:
-      "Handige thermo-elektrische koelbox. Perfect voor festivals, kamperen en dagjes strand. Werkt op 12V via de auto.",
+    desc: "Handige thermo-elektrische koelbox. Perfect voor festivals, kamperen en dagjes strand. Werkt op 12V via de auto.",
     specs: [
       ["Inhoud", "25 liter"],
       ["Voeding", "12V DC"],
@@ -96,7 +104,10 @@ const items: Record<string, {
     sellerName: "Peter",
     rating: "4.8",
     desc: "Universele 12V adapter, geschikt voor koelboxen en kleine apparaten.",
-    specs: [["Voltage", "12V"], ["Kabel", "1.5m"]],
+    specs: [
+      ["Voltage", "12V"],
+      ["Kabel", "1.5m"],
+    ],
   },
   "racefiets-rijdprima": {
     title: "Race fiets rijd prima",
@@ -140,7 +151,10 @@ export const Route = createFileRoute("/item/$id")({
   head: ({ params }) => ({
     meta: [
       { title: `${items[params.id]?.title ?? "Item"} — Marktplaats` },
-      { name: "description", content: items[params.id]?.desc?.slice(0, 150) ?? "" },
+      {
+        name: "description",
+        content: items[params.id]?.desc?.slice(0, 150) ?? "",
+      },
     ],
   }),
   component: ItemPage,
@@ -180,11 +194,12 @@ function ItemPage() {
   useEffect(() => {
     const el = ctaSentinelRef.current;
     if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => setShowCta(!entry.isIntersecting));
+    const observer = new IntersectionObserver(([entry]) =>
+      setShowCta(!entry.isIntersecting),
+    );
     observer.observe(el);
     return () => observer.disconnect();
   }, [id]);
-
 
   if (!item) {
     return (
@@ -215,12 +230,20 @@ function ItemPage() {
 
       <main className="flex-1 pb-28">
         <div className="aspect-square w-full bg-muted">
-          <img src={item.img} alt={item.title} className="h-full w-full object-cover" />
+          <img
+            src={item.img}
+            alt={item.title}
+            className="h-full w-full object-cover"
+          />
         </div>
 
         <div className="p-4">
-          <h1 className="font-sans text-lg font-bold leading-snug">{item.title}</h1>
-          <p className="mt-2 font-serif text-2xl font-normal text-foreground">{item.price}</p>
+          <h1 className="font-sans text-lg font-bold leading-snug">
+            {item.title}
+          </h1>
+          <p className="mt-2 font-serif text-2xl font-normal text-foreground">
+            {item.price}
+          </p>
           <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
             <MapPin className="h-3 w-3" /> {item.loc} · Vandaag geplaatst
           </p>
@@ -236,12 +259,15 @@ function ItemPage() {
                   <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                   {item.rating}
                   {item.reviews != null && (
-                    <span className="text-muted-foreground/70">({item.reviews})</span>
+                    <span className="text-muted-foreground/70">
+                      ({item.reviews})
+                    </span>
                   )}
                 </span>
               </p>
               <p className="flex items-center gap-1 text-[11px] text-muted-foreground">
-                <Shield className="h-3 w-3 text-emerald-600" /> Geverifieerde verkoper
+                <Shield className="h-3 w-3 text-emerald-600" /> Geverifieerde
+                verkoper
               </p>
             </div>
             <button className="rounded-full border px-3 py-1.5 text-xs font-medium active:scale-95">
@@ -253,7 +279,9 @@ function ItemPage() {
 
           <section className="mt-4">
             <h2 className="text-sm font-bold">Biedingen (0)</h2>
-            <p className="mt-1 text-xs text-muted-foreground">Geen biedingen geplaatst</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Geen biedingen geplaatst
+            </p>
           </section>
 
           <section className="mt-5">
@@ -270,7 +298,9 @@ function ItemPage() {
 
           <section className="mt-5">
             <h2 className="text-sm font-bold">Beschrijving</h2>
-            <p className="mt-2 text-sm leading-relaxed text-foreground/80">{item.desc}</p>
+            <p className="mt-2 text-sm leading-relaxed text-foreground/80">
+              {item.desc}
+            </p>
           </section>
 
           <section className="mt-5 flex items-center gap-1 text-xs text-muted-foreground">
