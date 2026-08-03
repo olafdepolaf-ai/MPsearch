@@ -137,13 +137,23 @@ export function MpHeader() {
               </button>
             )}
             {mode === "integrated-search" && (
-              <button
-                type="button"
-                onClick={showPuurMarktplaats}
-                className={`shrink-0 whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold ${plusButtonClass}`}
-              >
-                Puur Marktplaats
-              </button>
+              <span className="relative inline-flex shrink-0 rounded-full p-[1.5px]">
+                <span
+                  className="puur-glow-ring pointer-events-none absolute inset-0 rounded-full"
+                  aria-hidden="true"
+                />
+                <button
+                  type="button"
+                  onClick={showPuurMarktplaats}
+                  className={`relative z-10 overflow-hidden whitespace-nowrap rounded-full px-3.5 py-2 text-[13px] font-semibold ${plusButtonClass}`}
+                >
+                  Puur Marktplaats
+                  <span
+                    className="puur-glow-shimmer pointer-events-none absolute inset-0 rounded-full"
+                    aria-hidden="true"
+                  />
+                </button>
+              </span>
             )}
           </div>
           {mode === "chat-menu" && (

@@ -125,6 +125,23 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
+/* Puur Marktplaats pill: a single slow lap of a bright spot around the edge,
+   then a long idle pause before it repeats — kept as one long cycle (rather
+   than a fast infinite loop) so it reads as an occasional sparkle, not a
+   distracting constant animation. */
+@keyframes puur-orbit {
+  0% { transform: rotate(0deg); opacity: 0; }
+  4% { opacity: 1; }
+  20% { transform: rotate(360deg); opacity: 1; }
+  24% { transform: rotate(360deg); opacity: 0; }
+  100% { transform: rotate(360deg); opacity: 0; }
+}
+@keyframes puur-shimmer {
+  0% { transform: translateX(-120%) skewX(-20deg); opacity: 0; }
+  6% { opacity: 0.5; }
+  16% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+  100% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+}
 
 .animate-sheet-up { animation: slide-up-sheet 320ms cubic-bezier(0.22, 1, 0.36, 1); }
 .animate-fade-in { animation: fade-in 300ms ease-out; }
@@ -133,6 +150,23 @@
 .animate-typing-dot { animation: typing-dot 1s ease-in-out infinite; display: inline-block; }
 .animate-slide-in-right { animation: slide-in-right 280ms cubic-bezier(0.22, 1, 0.36, 1); }
 .animate-slide-in-left { animation: slide-in-left 280ms cubic-bezier(0.22, 1, 0.36, 1); }
+
+.puur-glow-ring {
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 300deg,
+    rgba(255, 255, 255, 0.95) 330deg,
+    rgba(191, 219, 254, 0.5) 345deg,
+    transparent 360deg
+  );
+  animation: puur-orbit 36s linear infinite;
+  filter: blur(0.5px);
+}
+.puur-glow-shimmer {
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
+  animation: puur-shimmer 36s ease-in-out infinite;
+}
 
 /* hide scrollbars on horizontal swipers */
 .no-scrollbar::-webkit-scrollbar { display: none; }
