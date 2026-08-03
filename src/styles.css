@@ -125,21 +125,19 @@
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
-/* Puur Marktplaats pill: a single slow lap of a bright spot around the edge,
-   then a long idle pause before it repeats — kept as one long cycle (rather
-   than a fast infinite loop) so it reads as an occasional sparkle, not a
-   distracting constant animation. */
+/* Puur Marktplaats pill: a bright spot laps the edge in ~3s, then idles for
+   the rest of a 15s cycle before repeating. */
 @keyframes puur-orbit {
   0% { transform: rotate(0deg); opacity: 0; }
-  4% { opacity: 1; }
+  3% { opacity: 1; }
   20% { transform: rotate(360deg); opacity: 1; }
   24% { transform: rotate(360deg); opacity: 0; }
   100% { transform: rotate(360deg); opacity: 0; }
 }
 @keyframes puur-shimmer {
   0% { transform: translateX(-120%) skewX(-20deg); opacity: 0; }
-  6% { opacity: 0.5; }
-  16% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
+  5% { opacity: 0.6; }
+  20% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
   100% { transform: translateX(220%) skewX(-20deg); opacity: 0; }
 }
 
@@ -155,17 +153,18 @@
   background: conic-gradient(
     from 0deg,
     transparent 0deg,
-    transparent 300deg,
-    rgba(255, 255, 255, 0.95) 330deg,
-    rgba(191, 219, 254, 0.5) 345deg,
+    transparent 295deg,
+    rgba(255, 255, 255, 0.9) 320deg,
+    #fff 340deg,
+    rgba(255, 255, 255, 0.9) 355deg,
     transparent 360deg
   );
-  animation: puur-orbit 36s linear infinite;
+  animation: puur-orbit 15s linear infinite;
   filter: blur(0.5px);
 }
 .puur-glow-shimmer {
   background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
-  animation: puur-shimmer 36s ease-in-out infinite;
+  animation: puur-shimmer 15s ease-in-out infinite;
 }
 
 /* hide scrollbars on horizontal swipers */

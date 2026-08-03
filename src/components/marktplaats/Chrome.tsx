@@ -137,7 +137,7 @@ export function MpHeader() {
               </button>
             )}
             {mode === "integrated-search" && (
-              <span className="relative inline-flex shrink-0 rounded-full p-[1.5px]">
+              <span className="relative inline-flex shrink-0 rounded-full p-[2px]">
                 <span
                   className="puur-glow-ring pointer-events-none absolute inset-0 rounded-full"
                   aria-hidden="true"
