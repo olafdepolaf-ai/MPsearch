@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { track } from "@vercel/analytics/react";
 
 type AccountMenuCtx = {
   open: boolean;
@@ -14,7 +15,12 @@ export function AccountMenuProvider({ children }: { children: ReactNode }) {
     <Ctx.Provider
       value={{
         open,
-        toggle: () => setOpen((v) => !v),
+        toggle: () =>
+          setOpen((v) => {
+            const next = !v;
+            if (next) track("Account menu opened");
+            return next;
+          }),
         close: () => setOpen(false),
       }}
     >

@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
+import { track } from "@vercel/analytics/react";
 
 type PuurMarktplaatsCtx = {
   open: boolean;
@@ -12,7 +13,14 @@ export function PuurMarktplaatsProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   return (
     <Ctx.Provider
-      value={{ open, show: () => setOpen(true), close: () => setOpen(false) }}
+      value={{
+        open,
+        show: () => {
+          track("Puur Marktplaats opened");
+          setOpen(true);
+        },
+        close: () => setOpen(false),
+      }}
     >
       {children}
     </Ctx.Provider>

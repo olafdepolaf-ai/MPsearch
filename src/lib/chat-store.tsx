@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { track } from "@vercel/analytics/react";
 
 export type ChatMessage = {
   id: string;
@@ -107,6 +108,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       // resume. The panel's own open animation is what carries the "old
       // content is gone, here's the new empty state" transition.
       open: () => {
+        track("Chat opened", { flow: entryState.flow });
         setView("open");
         setFlow(entryState.flow);
         setMessages(entryState.messages);
@@ -121,6 +123,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setRevealFrom(entry.messages.length);
       },
       pickSuggestion: (label) => {
+        track("Suggestion clicked", { label });
         setView("open");
         // Skip past the new user message — only the assistant's reply animates in.
         setRevealFrom(messages.length + 1);
@@ -168,6 +171,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ]);
       },
       chooseMarktplaatsKoelkast: () => {
+        track("Koelkast destination choice", { choice: "marktplaats" });
         setView("open");
         setFlow("koelkast-results");
         setRevealFrom(messages.length + 1);
@@ -183,6 +187,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ]);
       },
       chooseDestinationKoelkast: () => {
+        track("Koelkast destination choice", { choice: "destination" });
         setView("open");
         setFlow("suggestion-fallback");
         setRevealFrom(messages.length + 1);
@@ -217,6 +222,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         setRevealFrom(0);
       },
       askKofferbak: () => {
+        track("Kofferbak question asked");
         setView("open");
         setFlow("koelbox-60-answer");
         setRevealFrom(messages.length + 1);
@@ -237,6 +243,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         ]);
       },
       askPlug: () => {
+        track("Plug question asked");
         setView("open");
         setFlow("plug-answer");
         setRevealFrom(messages.length + 1);

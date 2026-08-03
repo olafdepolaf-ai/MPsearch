@@ -6,6 +6,7 @@ import {
   type ReactNode,
 } from "react";
 import { useNavigate, useRouterState } from "@tanstack/react-router";
+import { track } from "@vercel/analytics/react";
 
 /**
  * "chat-menu"        — Demo 1: huidige situatie. Gewone zoekbalk bovenaan;
@@ -68,6 +69,7 @@ export function DemoModeProvider({ children }: { children: ReactNode }) {
   const setMode = (next: DemoMode) => {
     setModeState(next);
     window.localStorage.setItem(STORAGE_KEY, next);
+    track("Demo switched", { to: next });
 
     // Keep the address bar in sync so it stays a shareable link — but only
     // when already on a "home" route; don't yank the user off an item page
