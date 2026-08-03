@@ -1,4 +1,11 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
+import { useNavigate, useRouterState } from "@tanstack/react-router";
 
 /**
  * "chat-menu"        — Demo 1: huidige situatie. Gewone zoekbalk bovenaan;
@@ -8,12 +15,23 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type DemoMode = "chat-menu" | "integrated-search";
 
 // Single source of truth for the demo picker — add an entry here to add a demo.
-export const DEMO_MODE_OPTIONS: { value: DemoMode; label: string }[] = [
-  { value: "chat-menu", label: "Demo 1 · Chatmenu" },
-  { value: "integrated-search", label: "Demo 2 · AI Search" },
+// `path` is the shareable, bookmarkable URL that forces this demo on load.
+export const DEMO_MODE_OPTIONS: {
+  value: DemoMode;
+  label: string;
+  path: string;
+}[] = [
+  { value: "chat-menu", label: "Demo 1 · Chatmenu", path: "/demo-1" },
+  { value: "integrated-search", label: "Demo 2 · AI Search", path: "/demo-2" },
 ];
 
 const STORAGE_KEY = "mp-demo-mode";
+
+// Reverse lookup: visiting one of these paths forces that demo's mode,
+// regardless of what was previously stored in localStorage.
+const PATH_TO_MODE: Record<string, DemoMode> = Object.fromEntries(
+  DEMO_MODE_OPTIONS.map((o) => [o.path, o.value]),
+) as Record<string, DemoMode>;
 
 type DemoModeCtx = {
   mode: DemoMode;
@@ -23,19 +41,42 @@ type DemoModeCtx = {
 const Ctx = createContext<DemoModeCtx | null>(null);
 
 export function DemoModeProvider({ children }: { children: ReactNode }) {
-  // Always start from the default on both server and first client render to
-  // avoid an SSR/client hydration mismatch; sync the stored preference in
-  // afterward via effect (client-only).
-  const [mode, setModeState] = useState<DemoMode>("chat-menu");
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const navigate = useNavigate();
+
+  // A forced path (/demo-1, /demo-2) resolves identically on server and
+  // client, so it's safe to use as the initial state directly. Everywhere
+  // else we still start from the default on both server and first client
+  // render to avoid an SSR/client hydration mismatch, and sync the stored
+  // preference in afterward via effect (client-only).
+  const [mode, setModeState] = useState<DemoMode>(
+    PATH_TO_MODE[pathname] ?? "chat-menu",
+  );
 
   useEffect(() => {
+    const forced = PATH_TO_MODE[pathname];
+    if (forced) {
+      setModeState(forced);
+      window.localStorage.setItem(STORAGE_KEY, forced);
+      return;
+    }
     const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "integrated-search" || stored === "chat-menu") setModeState(stored);
-  }, []);
+    if (stored === "integrated-search" || stored === "chat-menu")
+      setModeState(stored);
+  }, [pathname]);
 
   const setMode = (next: DemoMode) => {
     setModeState(next);
     window.localStorage.setItem(STORAGE_KEY, next);
+
+    // Keep the address bar in sync so it stays a shareable link — but only
+    // when already on a "home" route; don't yank the user off an item page
+    // just because they flipped the demo switcher.
+    const onHomeRoute = pathname === "/" || Boolean(PATH_TO_MODE[pathname]);
+    const target = DEMO_MODE_OPTIONS.find((o) => o.value === next)?.path;
+    if (onHomeRoute && target && target !== pathname) {
+      navigate({ to: target });
+    }
   };
 
   return <Ctx.Provider value={{ mode, setMode }}>{children}</Ctx.Provider>;
